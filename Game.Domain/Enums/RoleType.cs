@@ -1,4 +1,4 @@
-﻿namespace Game.Domain.Enums
+﻿namespace GameApp.Domain.Enums
 {
     public enum RoleType
     {

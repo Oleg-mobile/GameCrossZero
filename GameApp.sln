@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.WebApi", "Game.WebApi\Game.WebApi.csproj", "{45B0B6FD-C257-4ACC-9071-42A754EB15C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApp.WebApi", "Game.WebApi\GameApp.WebApi.csproj", "{45B0B6FD-C257-4ACC-9071-42A754EB15C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Domain", "Game.Domain\Game.Domain.csproj", "{0B7150D2-3854-4853-81F1-6E0D7300F885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApp.Domain", "Game.Domain\GameApp.Domain.csproj", "{0B7150D2-3854-4853-81F1-6E0D7300F885}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
