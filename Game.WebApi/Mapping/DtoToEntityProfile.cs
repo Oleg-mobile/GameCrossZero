@@ -6,9 +6,9 @@ namespace GameApp.WebApi.Mapping
 {
     public class DtoToEntityProfile : Profile
     {
-        protected DtoToEntityProfile()
+        public DtoToEntityProfile()
         {
-            CreateMap<AddUserDto, User>();
+            CreateMap<AddUserDto, User>().ReverseMap();
         }
     }
 }

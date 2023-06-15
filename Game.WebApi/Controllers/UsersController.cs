@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
-    public class UsersController : GameController
+    public class UsersController : GamesController
     {
-        public UsersController(GameContext context, Mapper mapper) : base(context, mapper)
+        public UsersController(GameContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
@@ -23,8 +23,8 @@ namespace GameApp.WebApi.Controllers
             }
 
             var user = Mapper.Map<User>(input);
-            Context.Users.Add(user);
-            Context.SaveChanges();
+            await Context.Users.AddAsync(user);
+            await Context.SaveChangesAsync();
 
             return Ok();
         }
@@ -39,7 +39,7 @@ namespace GameApp.WebApi.Controllers
                 query = query.Where(u => u.Login.Trim().ToLower().Contains(searchString.Trim().ToLower()));
             }
 
-            var usersDto = Mapper.Map<IList<AddUserDto>>(query.ToList());
+            var usersDto = Mapper.Map<IEnumerable<AddUserDto>>(query.ToList());
             return Ok(usersDto);
         }
     }

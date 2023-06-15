@@ -6,12 +6,12 @@ namespace GameApp.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class GameController : ControllerBase
+    public abstract class GamesController : ControllerBase
     {
         protected GameContext Context { get; private set; }
-        protected Mapper Mapper { get; set; }
+        protected IMapper Mapper { get; set; }
 
-        protected GameController(GameContext context, Mapper mapper)
+        protected GamesController(GameContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;

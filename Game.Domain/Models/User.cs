@@ -10,5 +10,8 @@ namespace GameApp.Domain.Models
         public RoleType Role { get; set; }
         public string? Avatar { get; set; }
         public int Raiting { get; set; }
+        public int? CurrentRoomId { get; set; }
+        public Boolean isReadyToPlay { get; set; }
+
     }
 }
