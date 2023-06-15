@@ -2,6 +2,7 @@
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Dto.Rooms;
+using GameApp.WebApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
@@ -30,7 +31,15 @@ namespace GameApp.WebApi.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            IQueryable<Room> query = Context.Rooms;
+            var roomsDto = Mapper.Map<IEnumerable<CreateRoomDto>>(query.ToList()).Select(r => new
+            {
+                r.Name,
+                r.ManagerId,
+                IsProtected = r.Password == null ? false : true,
+                CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
+            });
+            return Ok(roomsDto);
         }
 
         [HttpPost("[action]")]
@@ -49,7 +58,7 @@ namespace GameApp.WebApi.Controllers
             }
 
             var countPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == input.RoomId);
-            if (countPlayersInRoom >= 2)
+            if (countPlayersInRoom >= Constants.maxNumberOfPlayers)
             {
                 return BadRequest($"Превышено количество пользователей для комнаты");
             }
@@ -90,7 +99,7 @@ namespace GameApp.WebApi.Controllers
             }
 
             var isUserInRoom = Context.Users.Any(u => u.CurrentRoomId == input.RoomId && u.Id == input.UserId);
-            if (isUserInRoom)
+            if (!isUserInRoom)
             {
                 return BadRequest($"Пользователь с Id = {input.UserId} не находится в комнате");
             }
