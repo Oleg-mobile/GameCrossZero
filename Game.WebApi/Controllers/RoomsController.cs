@@ -31,8 +31,7 @@ namespace GameApp.WebApi.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAll()
         {
-            IQueryable<Room> query = Context.Rooms;
-            var roomsDto = Mapper.Map<IEnumerable<CreateRoomDto>>(query.ToList()).Select(r => new
+            var roomsDto = Context.Rooms.ToList().Select(r => new
             {
                 r.Name,
                 r.ManagerId,
@@ -46,12 +45,12 @@ namespace GameApp.WebApi.Controllers
         public async Task<IActionResult> Enter(EnterRoomDto input)
         {
             var isRoomExist = Context.Rooms.Any(r => r.Id == input.RoomId);
-            var isUserExist = Context.Users.Any(u => u.Id == input.UserId);
             if (!isRoomExist)
             {
                 return BadRequest($"Комната с Id = {input.RoomId} не существует");
             }
 
+            var isUserExist = Context.Users.Any(u => u.Id == input.UserId);
             if (!isUserExist)
             {
                 return BadRequest($"Пользователь с Id = {input.UserId} не существует");
@@ -87,12 +86,12 @@ namespace GameApp.WebApi.Controllers
         public async Task<IActionResult> Exit(EnterRoomDto input)
         {
             var isRoomExist = Context.Rooms.Any(r => r.Id == input.RoomId);
-            var isUserExist = Context.Users.Any(u => u.Id == input.UserId);
             if (!isRoomExist)
             {
                 return BadRequest($"Комната с Id = {input.RoomId} не существует");
             }
 
+            var isUserExist = Context.Users.Any(u => u.Id == input.UserId);
             if (!isUserExist)
             {
                 return BadRequest($"Пользователь с Id = {input.UserId} не существует");
