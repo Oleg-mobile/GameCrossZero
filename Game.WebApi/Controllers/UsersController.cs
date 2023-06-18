@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
-    public class UsersController : GamesController
+    public class UsersController : GameAppController
     {
         public UsersController(GameContext context, IMapper mapper) : base(context, mapper)
         {
@@ -41,6 +41,17 @@ namespace GameApp.WebApi.Controllers
 
             var usersDto = Mapper.Map<IEnumerable<AddUserDto>>(query.ToList());
             return Ok(usersDto);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ChangeReady(int userId)
+        {
+
+
+            var user = Context.Users.FirstOrDefault(u => u.Id == userId);
+            user.isReadyToPlay = !user.isReadyToPlay;
+            await Context.SaveChangesAsync();
+            return Ok(user.isReadyToPlay);
         }
     }
 }

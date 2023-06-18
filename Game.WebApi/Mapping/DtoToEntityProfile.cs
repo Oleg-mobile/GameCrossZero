@@ -11,6 +11,7 @@ namespace GameApp.WebApi.Mapping
         {
             CreateMap<AddUserDto, User>().ReverseMap();
             CreateMap<CreateRoomDto, Room>().ReverseMap();
+            CreateMap<GetRoomDto, Room>();
         }
     }
 }

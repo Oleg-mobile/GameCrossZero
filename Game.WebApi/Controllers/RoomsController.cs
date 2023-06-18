@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Dto.Rooms;
@@ -7,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
-    public class RoomsController : GamesController
+    public class RoomsController : GameAppController
     {
-        public RoomsController(GameContext context, IMapper mapper) : base(context, mapper)
+        private readonly IValidator<ExitRoomDto> _exitRoomValidator;
+        public RoomsController(GameContext context, IMapper mapper, IValidator<ExitRoomDto> exitRoomValidator) : base(context, mapper)
         {
+            _exitRoomValidator = exitRoomValidator;
         }
 
         [HttpPost("[action]")]
@@ -31,13 +34,23 @@ namespace GameApp.WebApi.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAll()
         {
-            var roomsDto = Context.Rooms.ToList().Select(r => new
+            //var roomsDto = Context.Rooms.ToList().Select(r => new
+            //{
+            //    r.Name,
+            //    r.ManagerId,
+            //    IsProtected = r.Password == null ? false : true,
+            //    CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
+            //});
+
+            IQueryable<Room> query = Context.Rooms;
+            var roomsDto = Mapper.Map<IEnumerable<GetRoomDto>>(query.Select(r => new GetRoomDto()
             {
-                r.Name,
-                r.ManagerId,
+                Name = r.Name,
+                ManagerId = r.ManagerId,
                 IsProtected = r.Password == null ? false : true,
                 CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
-            });
+            }).ToList());
+
             return Ok(roomsDto);
         }
 
@@ -83,31 +96,37 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Exit(EnterRoomDto input)
+        public async Task<IActionResult> Exit(ExitRoomDto input)
         {
-            var isRoomExist = Context.Rooms.Any(r => r.Id == input.RoomId);
-            if (!isRoomExist)
+            try
             {
-                return BadRequest($"Комната с Id = {input.RoomId} не существует");
+                _exitRoomValidator.ValidateAndThrow(input);
             }
-
-            var isUserExist = Context.Users.Any(u => u.Id == input.UserId);
-            if (!isUserExist)
+            catch (ValidationException ex)
             {
-                return BadRequest($"Пользователь с Id = {input.UserId} не существует");
-            }
-
-            var isUserInRoom = Context.Users.Any(u => u.CurrentRoomId == input.RoomId && u.Id == input.UserId);
-            if (!isUserInRoom)
-            {
-                return BadRequest($"Пользователь с Id = {input.UserId} не находится в комнате");
+                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
+                return BadRequest(message);
             }
 
             var user = Context.Users.Find(input.UserId);
             user.CurrentRoomId = null;
+            user.isReadyToPlay = false;
             Context.Users.Update(user);
-            await Context.SaveChangesAsync();
 
+            var listPlayersInRoom = Context.Users.Where(u => u.CurrentRoomId == input.RoomId).ToList();
+            if (listPlayersInRoom.Count == 0)
+            {
+                // удалить комнату
+            }
+
+            var room = Context.Rooms.Find(input.RoomId);
+            if (listPlayersInRoom.Count == 1 && room.ManagerId == input.UserId)
+            {
+                room.ManagerId = listPlayersInRoom[0].Id;
+                Context.Rooms.Update(room);
+            }
+
+            await Context.SaveChangesAsync();
             return Ok();
         }
     }

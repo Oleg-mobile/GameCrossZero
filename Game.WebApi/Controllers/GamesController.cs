@@ -1,20 +1,12 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public abstract class GamesController : ControllerBase
+    public class GamesController : GameAppController
     {
-        protected GameContext Context { get; private set; }
-        protected IMapper Mapper { get; set; }
-
-        protected GamesController(GameContext context, IMapper mapper)
+        public GamesController(GameContext context, IMapper mapper) : base(context, mapper)
         {
-            Context = context;
-            Mapper = mapper;
         }
     }
 }
