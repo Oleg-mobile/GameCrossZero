@@ -15,5 +15,6 @@ namespace GameApp.Domain.Models
         public User User { get; set; }
 
         public int Cell { get; set; }
+        public int StrokeNumber { get; set; }
     }
 }

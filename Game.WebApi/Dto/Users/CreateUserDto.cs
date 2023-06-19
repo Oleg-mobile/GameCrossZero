@@ -2,7 +2,7 @@
 
 namespace GameApp.WebApi.Dto.Users
 {
-    public class AddUserDto
+    public class CreateUserDto
     {
         public string Login { get; set; }
         public string Password { get; set; }

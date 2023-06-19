@@ -3,6 +3,7 @@ using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Dto.Users;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameApp.WebApi.Controllers
 {
@@ -13,7 +14,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Add(AddUserDto input)
+        public async Task<IActionResult> Create(CreateUserDto input)
         {
             var isExist = Context.Users.Any(u => u.Login == input.Login);
 
@@ -39,19 +40,26 @@ namespace GameApp.WebApi.Controllers
                 query = query.Where(u => u.Login.Trim().ToLower().Contains(searchString.Trim().ToLower()));
             }
 
-            var usersDto = Mapper.Map<IEnumerable<AddUserDto>>(query.ToList());
+            var usersDto = Mapper.Map<IEnumerable<CreateUserDto>>(await query.ToListAsync());
             return Ok(usersDto);
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> ChangeReady(int userId)
         {
-
-
             var user = Context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user is null)
+            {
+                return BadRequest($"Пользователь с {userId} не существует");
+            }
+
             user.isReadyToPlay = !user.isReadyToPlay;
             await Context.SaveChangesAsync();
             return Ok(user.isReadyToPlay);
         }
+
+        // TODO Нужно ли удалять. Что делать со статусами?
+        // TODO Нужен ли поиск по id?
     }
 }
