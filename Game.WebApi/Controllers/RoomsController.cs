@@ -50,6 +50,7 @@ namespace GameApp.WebApi.Controllers
             IQueryable<Room> query = Context.Rooms;
             var roomsDto = Mapper.Map<IEnumerable<GetRoomDto>>(await query.Select(r => new GetRoomDto()
             {
+                Id = r.Id,
                 Name = r.Name,
                 ManagerId = r.ManagerId,
                 IsProtected = r.Password == null ? false : true,

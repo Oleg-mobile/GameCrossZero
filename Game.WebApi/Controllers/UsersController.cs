@@ -40,7 +40,7 @@ namespace GameApp.WebApi.Controllers
                 query = query.Where(u => u.Login.Trim().ToLower().Contains(searchString.Trim().ToLower()));
             }
 
-            var usersDto = Mapper.Map<IEnumerable<CreateUserDto>>(await query.ToListAsync());
+            var usersDto = Mapper.Map<IEnumerable<GetUserDto>>(await query.ToListAsync());
             return Ok(usersDto);
         }
 
