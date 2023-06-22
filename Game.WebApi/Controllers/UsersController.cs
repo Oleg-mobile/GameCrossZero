@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
 using GameApp.Domain.Models;
-using GameApp.WebApi.Dto.Users;
+using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
-using GameApp.Domain.Migrations;
 using GameApp.Domain.Models;
-using GameApp.WebApi.Dto.Games;
-using GameApp.WebApi.Dto.Users;
+using GameApp.WebApi.Services.Games.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers

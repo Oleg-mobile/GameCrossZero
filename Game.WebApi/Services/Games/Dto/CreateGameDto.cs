@@ -1,4 +1,4 @@
-﻿namespace GameApp.WebApi.Dto.Games
+﻿namespace GameApp.WebApi.Services.Games.Dto
 {
     public class CreateGameDto
     {
