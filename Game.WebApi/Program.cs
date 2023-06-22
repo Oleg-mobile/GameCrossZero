@@ -1,5 +1,6 @@
 using FluentValidation;
 using GameApp.Domain;
+using GameApp.WebApi.Services.Rooms;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GameContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+builder.Services.AddTransient<IRoomService, RoomService>();
 
 var app = builder.Build();
 

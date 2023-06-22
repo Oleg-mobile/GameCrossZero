@@ -2,7 +2,8 @@
 using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
-using GameApp.WebApi.Dto.Rooms;
+using GameApp.WebApi.Services.Rooms;
+using GameApp.WebApi.Services.Rooms.Dto;
 using GameApp.WebApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,42 +14,34 @@ namespace GameApp.WebApi.Controllers
     {
         private readonly IValidator<ExitRoomDto> _exitRoomValidator;
         private readonly IValidator<EnterRoomDto> _enterRoomValidator;
+        private readonly IRoomService _roomService;
 
-        public RoomsController(GameContext context, IMapper mapper, IValidator<ExitRoomDto> exitRoomValidator, IValidator<EnterRoomDto> enterRoomValidator) : base(context, mapper)
+        public RoomsController(GameContext context, IMapper mapper, IValidator<ExitRoomDto> exitRoomValidator, IValidator<EnterRoomDto> enterRoomValidator, IRoomService roomService) : base(context, mapper)
         {
             _exitRoomValidator = exitRoomValidator;
             _enterRoomValidator = enterRoomValidator;
+            _roomService = roomService;
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Create(CreateRoomDto input)
         {
-            var isExist = Context.Rooms.Any(r => r.Name == input.Name);
-
-            if (isExist)
+            try
             {
-                return BadRequest($"Комната с названием {input.Name} уже существует");
+                await _roomService.Create(input);
+                return Ok();
             }
-
-            var room = Mapper.Map<Room>(input);
-            await Context.Rooms.AddAsync(room);
-            await Context.SaveChangesAsync();
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAll()
         {
-            //var roomsDto = Context.Rooms.ToList().Select(r => new
-            //{
-            //    r.Name,
-            //    r.ManagerId,
-            //    IsProtected = r.Password == null ? false : true,
-            //    CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
-            //});
-
             IQueryable<Room> query = Context.Rooms;
-            var roomsDto = Mapper.Map<IEnumerable<GetRoomDto>>(await query.Select(r => new GetRoomDto()
+            var roomsDto = Mapper.Map<IEnumerable<RoomDto>>(await query.Select(r => new RoomDto()
             {
                 Id = r.Id,
                 Name = r.Name,
@@ -107,27 +100,26 @@ namespace GameApp.WebApi.Controllers
                 return BadRequest(message);
             }
 
-            var isExist = Context.Users.Any(u => u.CurrentRoomId == input.RoomId);
-            if (!isExist)
+            var usersCount = Context.Users.Count(u => u.CurrentRoomId == input.RoomId);
+            if (usersCount == 1)
             {
-                // TODO ссылается на игру
-
                 Delete(input.RoomId);
-                return Ok();   // TODO Нужен?
+            }
+            else
+            {
+                var room = await Context.Rooms.FindAsync(input.RoomId);
+                if (room.ManagerId == input.UserId)
+                {
+                    var newRoomManager = await Context.Users.FirstAsync(u => u.CurrentRoomId == input.RoomId && u.Id != input.UserId);
+                    room.ManagerId = newRoomManager.Id;
+                    Context.Rooms.Update(room);
+                }
             }
 
             var user = await Context.Users.FindAsync(input.UserId);
             user.CurrentRoomId = null;
             user.isReadyToPlay = false;
             Context.Users.Update(user);
-
-            var room = await Context.Rooms.FindAsync(input.RoomId);
-            if (room.ManagerId == input.UserId)
-            {
-                var newRoomManager = await Context.Users.FirstOrDefaultAsync(u => u.CurrentRoomId == input.RoomId);
-                room.ManagerId = newRoomManager.Id;
-                Context.Rooms.Update(room);
-            }
 
             await Context.SaveChangesAsync();
             return Ok();

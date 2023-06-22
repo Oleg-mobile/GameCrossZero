@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using GameApp.Domain;
-using GameApp.WebApi.Dto.Rooms;
+using GameApp.WebApi.Services.Rooms.Dto;
 
 namespace GameApp.WebApi.Validators.Rooms
 {

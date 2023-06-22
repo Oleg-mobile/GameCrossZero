@@ -54,14 +54,15 @@ namespace GameApp.WebApi.Controllers
                 return BadRequest($"Не все игроки готовы играть");
             }
 
-            Random shapeSelection = new Random();
-            var shape = shapeSelection.Next(2) == 1;
+            var shapeSelection = new Random();
+            var isCross = shapeSelection.Next(2) == 1;
+
             var players = Context.Users.Where(u => u.CurrentRoomId == roomId).ToList();
             var firsrPlayer = players[0];
             var secondPlayer = players[1];
 
             var game = new CreateGameDto();
-            if (shape)
+            if (isCross)
             {
                 game.WhoseMoveId = firsrPlayer.Id;
             }
@@ -69,16 +70,28 @@ namespace GameApp.WebApi.Controllers
             {
                 game.WhoseMoveId = secondPlayer.Id;
             }
+
             game.RoomId = roomId;
             Create(game);
+            Context.SaveChanges();
 
-            // Игры пользователей
-            var userGame = new UserGame();
+            var userGame = new UserGame
+            {
+                GameId = game.Id,
+                UserId = firsrPlayer.Id,
+                IsCross = isCross
+            };
+            Context.UserGames.Add(userGame);
 
+            userGame = new UserGame
+            {
+                GameId = game.Id,
+                UserId = secondPlayer.Id,
+                IsCross = !isCross
+            };
+            Context.UserGames.Add(userGame);
 
-            // Прогресс игры
-            var gameProgress = new GameProgress();
-
+            Context.SaveChanges();
             return Ok();
         }
     }

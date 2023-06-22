@@ -1,6 +1,6 @@
-﻿namespace GameApp.WebApi.Dto.Rooms
+﻿namespace GameApp.WebApi.Services.Rooms.Dto
 {
-    public class GetRoomDto
+    public class RoomDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
