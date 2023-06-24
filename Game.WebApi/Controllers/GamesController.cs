@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
+using GameApp.Domain.Migrations;
 using GameApp.Domain.Models;
+using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Games.Dto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,89 +10,39 @@ namespace GameApp.WebApi.Controllers
 {
     public class GamesController : GameAppController
     {
-        public GamesController(GameContext context, IMapper mapper) : base(context, mapper)
+        private readonly IGameService _gameService;
+
+        public GamesController(GameContext context, IMapper mapper, IGameService gameService) : base(context, mapper)
         {
+            _gameService = gameService;
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Create(CreateGameDto input)
         {
-            var isExist = Context.Games.Any(u => u.Id == input.Id);
-
-            if (isExist)
+            try
             {
-                return BadRequest($"Игра с Id = {input.Id} уже существует");
+                await _gameService.Create(input);
+                return Ok();
             }
-
-            var game = Mapper.Map<Game>(input);
-            await Context.Games.AddAsync(game);
-            await Context.SaveChangesAsync();
-
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Start(int roomId)
         {
-            var isExist = Context.Rooms.Any(r => r.Id == roomId);
-
-            // TODO в валидатор
-            if (!isExist)
+            try
             {
-                return BadRequest($"Комната с Id = {roomId} не существует");
+                await _gameService.Start(roomId);
+                return Ok();
             }
-
-            var playersInRoom = Context.Users.Count(u => u.CurrentRoomId == roomId);
-            if (playersInRoom < Utils.Constants.maxNumberOfPlayers)
+            catch (Exception ex)
             {
-                return BadRequest($"В комнате не достаточно игроков для игры");
+                return BadRequest(ex.Message);
             }
-
-            var playersReadyToPlay = Context.Users.Count(u => u.isReadyToPlay == true);
-            if (playersReadyToPlay < Utils.Constants.maxNumberOfPlayers)
-            {
-                return BadRequest($"Не все игроки готовы играть");
-            }
-
-            var shapeSelection = new Random();
-            var isCross = shapeSelection.Next(2) == 1;
-
-            var players = Context.Users.Where(u => u.CurrentRoomId == roomId).ToList();
-            var firsrPlayer = players[0];
-            var secondPlayer = players[1];
-
-            var game = new CreateGameDto();
-            if (isCross)
-            {
-                game.WhoseMoveId = firsrPlayer.Id;
-            }
-            else
-            {
-                game.WhoseMoveId = secondPlayer.Id;
-            }
-
-            game.RoomId = roomId;
-            Create(game);
-            Context.SaveChanges();
-
-            var userGame = new UserGame
-            {
-                GameId = game.Id,
-                UserId = firsrPlayer.Id,
-                IsCross = isCross
-            };
-            Context.UserGames.Add(userGame);
-
-            userGame = new UserGame
-            {
-                GameId = game.Id,
-                UserId = secondPlayer.Id,
-                IsCross = !isCross
-            };
-            Context.UserGames.Add(userGame);
-
-            Context.SaveChanges();
-            return Ok();
         }
     }
 }

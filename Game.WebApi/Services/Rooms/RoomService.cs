@@ -3,7 +3,6 @@ using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Rooms.Dto;
-using GameApp.WebApi.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameApp.WebApi.Services.Rooms
@@ -57,19 +56,6 @@ namespace GameApp.WebApi.Services.Rooms
             {
                 var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
                 throw new Exception(message);
-            }
-
-            // TODO Добавить в валидатор?
-            var countPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == input.RoomId);
-            if (countPlayersInRoom >= Constants.maxNumberOfPlayers)
-            {
-                throw new Exception($"Превышено количество пользователей для комнаты");
-            }
-            // TODO Добавить в валидатор?
-            var room = await Context.Rooms.FindAsync(input.RoomId);
-            if (!string.IsNullOrEmpty(room.Password) && room.Password != input.Password)
-            {
-                throw new Exception("Не верный пароль");
             }
 
             var user = await Context.Users.FindAsync(input.UserId);
