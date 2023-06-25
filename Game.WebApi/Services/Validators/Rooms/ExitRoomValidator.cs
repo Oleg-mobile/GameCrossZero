@@ -2,7 +2,7 @@
 using GameApp.Domain;
 using GameApp.WebApi.Services.Rooms.Dto;
 
-namespace GameApp.WebApi.Validators.Rooms
+namespace GameApp.WebApi.Services.Validators.Rooms
 {
     public class ExitRoomValidator : AbstractValidator<ExitRoomDto>
     {

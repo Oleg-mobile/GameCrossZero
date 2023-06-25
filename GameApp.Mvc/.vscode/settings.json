@@ -1,0 +1,19 @@
+{
+	"security.workspace.trust.untrustedFiles": "open",
+	"prettier.tabWidth": 4,
+	"prettier.useTabs": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.singleAttributePerLine": true,
+	"prettier.singleQuote": true,
+	"liveServer.settings.donotShowInfoMsg": true,
+	"liveSassCompile.settings.formats": [
+		{
+			"format": "compressed",
+			"extensionName": ".min.css",
+			"savePath": "./wwwroot/css",
+			"savePathReplacementPairs": null
+		}
+	],
+	"workbench.iconTheme": "material-icon-theme"
+}

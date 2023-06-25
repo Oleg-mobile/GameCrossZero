@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using GameApp.Domain;
-using GameApp.Domain.Migrations;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Games.Dto;
-using GameApp.WebApi.Services.Rooms.Dto;
-using GameApp.WebApi.Validators.Rooms;
 
 namespace GameApp.WebApi.Services.Games
 {
     public class GameService : GameAppService, IGameService
     {
-        private readonly IValidator<CreateGameDto> _createGameValidator;
+        private readonly IValidator<int> _startGameValidator;
 
-        public GameService(GameContext context, IMapper mapper, IValidator<CreateGameDto> createGameValidator) : base(context, mapper)
+        public GameService(GameContext context, IMapper mapper, IValidator<int> startGameValidator) : base(context, mapper)
         {
-            _createGameValidator = createGameValidator;
+            _startGameValidator = startGameValidator;
         }
 
         public async Task Create(CreateGameDto input)
@@ -34,34 +31,15 @@ namespace GameApp.WebApi.Services.Games
 
         public async Task Start(int roomId)
         {
-            //TODO в валидатор
-            var isExist = Context.Rooms.Any(r => r.Id == roomId);
-            if (!isExist)
+            try
             {
-                throw new Exception($"Комната с Id = {roomId} не существует");
+                _startGameValidator.ValidateAndThrow(roomId);
             }
-
-            var playersInRoom = Context.Users.Count(u => u.CurrentRoomId == roomId);
-            if (playersInRoom < Utils.Constants.maxNumberOfPlayers)
+            catch (ValidationException ex)
             {
-                throw new Exception($"В комнате не достаточно игроков для игры");
+                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
+                throw new Exception(message);
             }
-
-            var playersReadyToPlay = Context.Users.Count(u => u.isReadyToPlay == true);
-            if (playersReadyToPlay < Utils.Constants.maxNumberOfPlayers)
-            {
-                throw new Exception($"Не все игроки готовы играть");
-            }
-
-            //try
-            //{
-            //    _createGameValidator.ValidateAndThrow();
-            //}
-            //catch (ValidationException ex)
-            //{
-            //    var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
-            //    throw new Exception(message);
-            //}
 
             var shapeSelection = new Random();
             var isCross = shapeSelection.Next(2) == 1;
