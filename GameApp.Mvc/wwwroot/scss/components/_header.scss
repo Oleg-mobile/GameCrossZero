@@ -1,9 +1,10 @@
 .header {
 	display: flex;
-	//justify-content: center;
 	align-items: center;
 	justify-content: space-between;
 	padding: 20px 60px 20px 40px;
+	background-color: $background-header;
+	width: 100%;
 
 	&__navbar {
 		display: flex;
@@ -20,7 +21,7 @@
 			display: flex;
 			align-items: center;
 			margin-right: 100px;
-			color: black;
+			color: white;
 			margin-top: 10px;
 		}
 	}
@@ -48,6 +49,7 @@
 			display: flex;
 			align-items: center;
 			flex-direction: column;
+			color: white;
 		}
 
 		&__raiting {
