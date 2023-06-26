@@ -10,24 +10,41 @@
 </head>
 <body>
     <header class="header">
-        <img class="header__logo" />
+
         <nav class="header__navbar">
-            <ul class="header__nav">
+            <img 
+                class="header__navbar__logo" 
+        	    src="img/logo.ico"
+			    alt="logo"
+            />
+            <ul class="header__navbar__nav">
                 <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a
+                        data-target=""
+					    title="Home">
+                        Home
+                    </a>
                 </li>
                 <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <a 
+                        data-target=""
+					    title="Privacy">
+                        Privacy
+                    </a>
                 </li>
             </ul>
+        </nav>
             <div class="user-area">
-                <img class="user-area__avatar"/>
+                <img 
+                    class="user-area__avatar"
+                    src="img/boy.ico"
+			        alt="avatar"
+                />
                 <div>
                     <span class="user-area__raiting">12 mmr</span>
                     <span class="user-area__login">login</span>
                 </div>
             </div>
-        </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
