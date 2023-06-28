@@ -1,9 +1,35 @@
 .rooms {
 	background-color: $background-component;
 	border-radius: $border-card-radius;
+	padding: 45px;
+	align-items: center;
 
 	&__item {
-		background: gray;
-		color: white;
+		display: flex;
+		justify-content: space-between;
+		border-radius: $border-card-radius;
+		background: $background;
+		color: $white-text;
+		padding: 10px 30px 10px 30px;
+		font-size: 20px;
+
+		& + & {
+			margin-top: 20px;
+		}
+	}
+
+	&__info {
+		margin-top: 17px;
+		//vertical-align: middle;
+	}
+
+	&__img {
+		max-width: 70px;
+		margin-right: 30px;
+	}
+
+	&__protection {
+		max-width: 30px;
+		margin-right: 30px;
 	}
 }
