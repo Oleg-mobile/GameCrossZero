@@ -6,5 +6,18 @@
 	box-sizing: border-box;
 }
 
+body {
+	min-height: 100vh;
+}
+
+.container-fluid {
+	background-color: $background;
+	min-height: 100vh;
+}
+
+main {
+	padding-top: 100px;
+}
+
 // Components
-@import './components/header';
+@import './components/header', './components/rooms';

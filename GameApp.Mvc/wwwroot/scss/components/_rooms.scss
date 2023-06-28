@@ -1,0 +1,9 @@
+.rooms {
+	background-color: $background-component;
+	border-radius: $border-card-radius;
+
+	&__item {
+		background: gray;
+		color: white;
+	}
+}
