@@ -10,7 +10,7 @@
 		border-radius: $border-card-radius;
 		background: $background;
 		color: $white-text;
-		padding: 10px 30px 10px 30px;
+		padding: 10px 40px 10px 10px;
 		font-size: 20px;
 
 		& + & {
@@ -18,9 +18,14 @@
 		}
 	}
 
+	&__name {
+		color: $name-text;
+	}
+
 	&__info {
 		margin-top: 17px;
 		//vertical-align: middle;
+		color: $count-text;
 	}
 
 	&__img {
