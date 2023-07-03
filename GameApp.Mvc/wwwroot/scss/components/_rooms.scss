@@ -6,6 +6,7 @@
 
 	&__item {
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
 		border-radius: $border-card-radius;
 		background: $background;
@@ -19,12 +20,14 @@
 	}
 
 	&__name {
+		display: flex;
+		align-items: center;
 		color: $name-text;
 	}
 
 	&__info {
-		margin-top: 17px;
-		//vertical-align: middle;
+		display: flex;
+		align-items: center;
 		color: $count-text;
 	}
 

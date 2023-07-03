@@ -1,4 +1,6 @@
 ﻿import { RoomsApi } from "./../../api/api/RoomsApi.js"
+
 document.addEventListener('DOMContentLoaded', () => {
-    //RoomsApi.
+    RoomsApi.apiRoomsGetAllGet(x => console.log(x));
+
 })
