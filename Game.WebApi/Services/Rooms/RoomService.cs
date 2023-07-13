@@ -31,6 +31,10 @@ namespace GameApp.WebApi.Services.Rooms
 
             await Context.Rooms.AddAsync(room);
             await Context.SaveChangesAsync();
+
+            var enterRoomDto = Mapper.Map<EnterRoomDto>(input);
+            enterRoomDto.RoomId = room.Id;
+            await Enter(enterRoomDto);
         }
 
         public async Task Delete(int id)
@@ -109,7 +113,7 @@ namespace GameApp.WebApi.Services.Rooms
                 Id = r.Id,
                 Name = r.Name,
                 ManagerId = r.ManagerId,
-                IsProtected = r.Password == null ? false : true,
+                IsProtected = !string.IsNullOrWhiteSpace(r.Password),
                 CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
             }).ToListAsync());
         }

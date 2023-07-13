@@ -1,0 +1,12 @@
+.btn {
+	background-color: $btncolor;
+	border: 2px solid $btnbordercolor;
+	border-radius: $border-card-radius;
+	color: $btntext;
+	-webkit-text-stroke: 1px $btnbordercolor;
+	padding: 8px 50px;
+	cursor: pointer;
+	transition: all linear 200ms;
+	font-size: 20px;
+	font-weight: bold;
+}

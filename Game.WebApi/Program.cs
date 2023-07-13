@@ -16,6 +16,7 @@ builder.Services.AddDbContext<GameContext>(o => o.UseSqlServer(builder.Configura
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(s => s.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseAuthorization();
 

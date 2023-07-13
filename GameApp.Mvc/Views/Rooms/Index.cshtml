@@ -2,63 +2,111 @@
 https://go.microsoft.com/fwlink/?LinkID=397860 *@ @{ }
 
 <div class="rooms">
-	<div class="rooms__item">
-		<div class="rooms__name">
-			<img
-				class="rooms__img"
-				src="~/img/lobby.ico"
-				alt="room logo"
-			/>
-			Name
-		</div>
-		<div class="rooms__info">
-			<img
-				class="rooms__protection"
-				src="~/img/locked-padlock.ico"
-				alt="lock"
-			/>
-			1 / 2
+	<div class="rooms__header">
+		<button
+			class="btn"
+			data-bs-toggle="modal"
+			data-bs-target="#createModal"
+		>
+			Создать
+		</button>
+		<input
+			class="input"
+			type="text"
+			placeholder="Поиск"
+		/>
+	</div>
+	<div class="rooms__items"></div>
+</div>
+
+<div
+	id="createModal"
+	class="modal"
+	tabindex="-1"
+>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Создание комнаты</h5>
+				<button
+					type="button"
+					class="btn-close btn-close-white"
+					data-bs-dismiss="modal"
+					aria-label="Close"
+				></button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-body__name item">
+					<label for="">Название</label>
+					<input
+						id="roomName"
+						class="input"
+						type="text"
+						placeholder="Название комнаты"
+					/>
+				</div>
+				<div class="contact__password item">
+					<label for="">Пароль</label>
+					<input
+						id="roomPassword"
+						class="input"
+						type="text"
+						placeholder="Введите пароль"
+					/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button
+					id="createRoom"
+					type="button"
+					class="btn btn-primary"
+				>
+					Сохранить
+				</button>
+			</div>
 		</div>
 	</div>
-	<div class="rooms__item">
-		<div class="rooms__name">
-			<img
-				class="rooms__img"
-				src="~/img/lobby.ico"
-				alt="room logo"
-			/>
-			Name
-		</div>
-		<div class="rooms__info">
-			<img
-				hidden
-				class="rooms__protection"
-				src="~/img/unlocked-padlock.ico"
-				alt="lock"
-			/>
-			1 / 2
-		</div>
-	</div>
-	<div class="rooms__item">
-		<div class="rooms__name">
-			<img
-				class="rooms__img"
-				src="~/img/lobby.ico"
-				alt="room logo"
-			/>
-			Name
-		</div>
-		<div class="rooms__info">
-			<img
-				class="rooms__protection"
-				src="~/img/locked-padlock.ico"
-				alt="lock"
-			/>
-			1 / 2
+</div>
+
+<div
+	id="roomModal"
+	class="modal"
+	tabindex="-1"
+>
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Комната</h5>
+				<button
+					type="button"
+					class="btn-close btn-close-white"
+					data-bs-dismiss="modal"
+					aria-label="Close"
+				></button>
+			</div>
+			<div class="modal-body">
+				<div class="room">
+					<div class="room__players">
+						<div class="room-player">
+							<div class="room-player__avatar">
+								<img
+									src="https://yandex.ru/images/search?img_url=https%3A%2F%2Fcdn1.iconfinder.com%2Fdata%2Ficons%2Fgames-colored%2F512%2Fgamer-1024.png&lr=103819&pos=2&rpt=simage&source=serp&text=%D0%B8%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0%20%D0%B8%D0%B3%D1%80%D0%BE%D0%BA%D0%B0"
+									alt=""
+								/>
+							</div>
+							<div class="room-player__nickname">Nick</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
 @section Scripts {
-	<script src="~/js/Rooms/index.js" asp-append-version="true" type="module"></script>
+<script
+	src="~/js/views/rooms/index.js"
+	asp-append-version="true"
+	type="module"
+></script>
 }

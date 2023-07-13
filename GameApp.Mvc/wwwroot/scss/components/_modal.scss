@@ -1,0 +1,48 @@
+.modal-content {
+	display: flex;
+	background: $background;
+	border-radius: 20px;
+	border: 2px solid $background-component;
+}
+
+.btn-close {
+}
+
+.modal-header {
+	color: $white-text;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	$btn-close-color: red;
+}
+
+.modal-body {
+	color: $count-text;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+}
+
+.modal-footer {
+	display: flex;
+	align-items: center;
+}
+
+.item {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+
+	& + & {
+		margin-top: 10px;
+	}
+}
+
+.input {
+	border: 2px solid $count-text;
+	background: $background-component;
+}
+
+::placeholder {
+	color: $count-text;
+}

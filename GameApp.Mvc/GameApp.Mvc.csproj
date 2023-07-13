@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\api\" />
+    <Content Remove="Views\Rooms\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Rooms\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
