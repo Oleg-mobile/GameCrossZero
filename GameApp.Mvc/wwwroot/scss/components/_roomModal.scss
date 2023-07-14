@@ -1,0 +1,26 @@
+.room {
+	&__players {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 40px;
+	}
+}
+
+.room-player {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+
+	&__logo {
+		width: 100px;
+		margin-bottom: 10px;
+	}
+
+	&__vs {
+		width: 60px;
+		margin-bottom: 10px;
+		margin-left: 40px;
+		margin-right: 40px;
+	}
+}
