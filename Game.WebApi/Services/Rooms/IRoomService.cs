@@ -9,5 +9,6 @@ namespace GameApp.WebApi.Services.Rooms
         Task Enter(EnterRoomDto input);
         Task Exit(ExitRoomDto input);
         Task Delete(int id);
+        Task<CurrentRoomDto> GetCurrentRoom();
     }
 }

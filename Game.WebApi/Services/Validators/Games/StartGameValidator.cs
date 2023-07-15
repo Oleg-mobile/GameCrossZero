@@ -20,7 +20,7 @@ namespace GameApp.WebApi.Services.Validators.Games
 
         private static bool CheckForReadyToPlay(GameContext context, int roomId)
         {
-            var playersReadyToPlay = context.Users.Count(u => u.isReadyToPlay == true && u.CurrentRoomId == roomId);
+            var playersReadyToPlay = context.Users.Count(u => u.IsReadyToPlay == true && u.CurrentRoomId == roomId);
             return playersReadyToPlay == Utils.Constants.maxNumberOfPlayers;
         }
     }

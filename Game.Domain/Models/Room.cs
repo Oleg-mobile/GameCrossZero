@@ -10,5 +10,9 @@ namespace GameApp.Domain.Models
 
         [ForeignKey("ManagerId")]
         public User Manager { get; set; }
+        public int? CurrentGameId { get; set; }
+
+        [ForeignKey("CurrentGameId")]
+        public Game CurrentGame { get; set; }
     }
 }

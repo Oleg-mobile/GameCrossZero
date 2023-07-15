@@ -15,10 +15,10 @@ namespace GameApp.WebApi.Services.Users
         public async Task<bool> ChangeReady(int userId)
         {
             var user = Context.Users.FirstOrDefault(u => u.Id == userId) ?? throw new Exception($"Пользователь с {userId} не существует");
-            user.isReadyToPlay = !user.isReadyToPlay;
+            user.IsReadyToPlay = !user.IsReadyToPlay;
             await Context.SaveChangesAsync();
 
-            return user.isReadyToPlay;
+            return user.IsReadyToPlay;
         }
 
         public async Task Create(CreateUserDto input)

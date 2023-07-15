@@ -63,6 +63,16 @@ class RoomsService {
             });
     }
 
+    async getCurrentRoom() {
+        return await axios.get(this.url + '/GetCurrentRoom')
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
 }
 
 export default new RoomsService();

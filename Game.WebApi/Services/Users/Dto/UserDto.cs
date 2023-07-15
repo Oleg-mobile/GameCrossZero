@@ -11,6 +11,6 @@ namespace GameApp.WebApi.Services.Users.Dto
         public string? Avatar { get; set; }
         public int Raiting { get; set; }
         public int? CurrentRoomId { get; set; }
-        public bool isReadyToPlay { get; set; }
+        public bool IsReadyToPlay { get; set; }
     }
 }

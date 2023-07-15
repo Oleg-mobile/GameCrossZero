@@ -1,4 +1,5 @@
 ﻿using GameApp.Domain.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameApp.Domain.Models
 {
@@ -11,7 +12,10 @@ namespace GameApp.Domain.Models
         public string? Avatar { get; set; }
         public int Raiting { get; set; }
         public int? CurrentRoomId { get; set; }
-        public Boolean isReadyToPlay { get; set; }
+        public bool IsReadyToPlay { get; set; }
+
+        [ForeignKey("CurrentRoomId")]
+        public Room CurrentRoom { get; set; }
 
     }
 }

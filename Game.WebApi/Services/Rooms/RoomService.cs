@@ -3,6 +3,7 @@ using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Rooms.Dto;
+using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameApp.WebApi.Services.Rooms
@@ -98,7 +99,7 @@ namespace GameApp.WebApi.Services.Rooms
 
             var user = await Context.Users.FindAsync(input.UserId);
             user.CurrentRoomId = null;
-            user.isReadyToPlay = false;
+            user.IsReadyToPlay = false;
             Context.Users.Update(user);
 
             await Context.SaveChangesAsync();
@@ -116,6 +117,28 @@ namespace GameApp.WebApi.Services.Rooms
                 IsProtected = !string.IsNullOrWhiteSpace(r.Password),
                 CountPlayersInRoom = Context.Users.Count(u => u.CurrentRoomId == r.Id)
             }).ToListAsync());
+        }
+
+        public async Task<CurrentRoomDto> GetCurrentRoom()
+        {
+            var playerId = 1; // TODO убрать, кгда сделает токены
+            var player = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == playerId);
+
+            if (player.CurrentRoom is null)
+            {
+                return null;
+            }
+
+            var opponent = Context.Users.FirstOrDefault(u => u.CurrentRoomId == player.CurrentRoomId  && u.Id != player.Id);
+
+            return new CurrentRoomDto
+            {
+                IsGameStarted = player.CurrentRoom.CurrentGameId != null,
+                IsPlayerRoomManager = player.CurrentRoom.ManagerId == playerId,
+                Player = Mapper.Map<UserDto>(player),
+                Opponent = Mapper.Map<UserDto>(opponent),
+                RoomName = player.CurrentRoom.Name
+            };
         }
     }
 }

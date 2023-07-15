@@ -76,5 +76,11 @@ namespace GameApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCurrentRoom()
+        {
+            return Ok(await _roomService.GetCurrentRoom());
+        }
     }
 }
