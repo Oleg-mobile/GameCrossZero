@@ -15,7 +15,7 @@ namespace GameApp.Domain.Models
         public bool IsReadyToPlay { get; set; }
 
         [ForeignKey("CurrentRoomId")]
-        public Room CurrentRoom { get; set; }
+        public Room? CurrentRoom { get; set; }
 
     }
 }

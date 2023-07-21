@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			return;
 		}
 
-		document.querySelector('#playerNickname').value = currentRoom.player.nickname;
+		document.querySelector('#playerNickname').textContent = currentRoom.player.nickname;
 		roomModal.show();
 	};
 
@@ -56,11 +56,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const dto = {
 			name: roomNameInput.value,
 			password: roomPasswordInput.value,
-			managerId: 1
+			managerId: 2
 		}
 
 		await roomsService.create(dto);
 		createRoomModal.hide();
 		await initRooms();
+		await redirectToRoom();
 	});
 })

@@ -13,6 +13,6 @@ namespace GameApp.Domain.Models
         public int? CurrentGameId { get; set; }
 
         [ForeignKey("CurrentGameId")]
-        public Game CurrentGame { get; set; }
+        public Game? CurrentGame { get; set; }
     }
 }

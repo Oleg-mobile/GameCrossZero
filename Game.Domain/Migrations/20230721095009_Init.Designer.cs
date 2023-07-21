@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameApp.Domain.Migrations
 {
     [DbContext(typeof(GameContext))]
-    [Migration("20230619194013_StrokeNumber")]
-    partial class StrokeNumber
+    [Migration("20230721095009_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,6 +89,9 @@ namespace GameApp.Domain.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CurrentGameId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ManagerId")
                         .HasColumnType("int");
 
@@ -100,6 +103,8 @@ namespace GameApp.Domain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrentGameId");
 
                     b.HasIndex("ManagerId");
 
@@ -120,6 +125,9 @@ namespace GameApp.Domain.Migrations
                     b.Property<int?>("CurrentRoomId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsReadyToPlay")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,10 +145,9 @@ namespace GameApp.Domain.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<bool>("isReadyToPlay")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrentRoomId");
 
                     b.ToTable("Users");
                 });
@@ -211,13 +218,28 @@ namespace GameApp.Domain.Migrations
 
             modelBuilder.Entity("GameApp.Domain.Models.Room", b =>
                 {
+                    b.HasOne("GameApp.Domain.Models.Game", "CurrentGame")
+                        .WithMany()
+                        .HasForeignKey("CurrentGameId");
+
                     b.HasOne("GameApp.Domain.Models.User", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("CurrentGame");
+
                     b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("GameApp.Domain.Models.User", b =>
+                {
+                    b.HasOne("GameApp.Domain.Models.Room", "CurrentRoom")
+                        .WithMany()
+                        .HasForeignKey("CurrentRoomId");
+
+                    b.Navigation("CurrentRoom");
                 });
 
             modelBuilder.Entity("GameApp.Domain.Models.UserGame", b =>

@@ -121,7 +121,7 @@ namespace GameApp.WebApi.Services.Rooms
 
         public async Task<CurrentRoomDto> GetCurrentRoom()
         {
-            var playerId = 1; // TODO убрать, кгда сделает токены
+            var playerId = 2; // TODO убрать, кгда сделает токены
             var player = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == playerId);
 
             if (player.CurrentRoom is null)
