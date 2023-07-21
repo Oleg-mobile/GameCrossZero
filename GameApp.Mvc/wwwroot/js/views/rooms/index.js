@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 
 		document.querySelector('#playerNickname').textContent = currentRoom.player.nickname;
+
+		if (currentRoom.opponent)
+		{
+			document.querySelector('#opponentNickname').textContent = currentRoom.opponent.nickname;
+		}
+
 		roomModal.show();
 	};
 
