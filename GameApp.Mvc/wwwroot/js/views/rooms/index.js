@@ -1,4 +1,5 @@
 ﻿import roomsService from "../../Api/roomsService.js";
+import APP_CONSTS from "../../common/appConsts.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -12,10 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 
 		document.querySelector('#playerNickname').textContent = currentRoom.player.nickname;
+		document.querySelector('#player img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.player.avatar}`;
 
 		if (currentRoom.opponent)
 		{
 			document.querySelector('#opponentNickname').textContent = currentRoom.opponent.nickname;
+			document.querySelector('#opponent img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
 		}
 
 		roomModal.show();
