@@ -1,6 +1,8 @@
 using FluentValidation;
 using GameApp.Domain;
+using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Rooms;
+using GameApp.WebApi.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -20,10 +22,12 @@ builder.Services.AddDbContext<GameContext>(o => o.UseSqlServer(builder.Configura
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddCors();
 builder.Services
 	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(opt => 
+	.AddJwtBearer(opt =>
 	{
 		opt.TokenValidationParameters = new TokenValidationParameters
 		{
@@ -45,8 +49,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
