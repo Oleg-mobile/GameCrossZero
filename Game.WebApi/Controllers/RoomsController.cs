@@ -2,10 +2,12 @@
 using GameApp.Domain;
 using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Rooms.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
+    [Authorize]
     public class RoomsController : GameAppController
     {
         private readonly IRoomService _roomService;
