@@ -17,32 +17,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => 
+builder.Services.AddSwaggerGen(c =>
 {
-	c.SwaggerDoc("v1", new OpenApiInfo { Title = "GameApp.WebApi", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GameApp.WebApi", Version = "v1" });
 
-	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-	{
-		Type = SecuritySchemeType.Http,
-		BearerFormat = "JWT",
-		In = ParameterLocation.Header,
-		Scheme = "bearer",
-		Description = "¬ведите свой JWT-токен"
-	});
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Scheme = "bearer",
+        Description = "¬ведите свой JWT-токен"
+    });
 
-	c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
 {
-	{
-		new OpenApiSecurityScheme
-		{
-			Reference = new OpenApiReference
-			{
-				Type = ReferenceType.SecurityScheme,
-				Id = "Bearer"
-			}
-		},
-		new string[] { }
-	}
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        new string[] { }
+    }
 });
 });
 
@@ -54,31 +54,31 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddCors();
 builder.Services
-	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(opt =>
-	{
-		opt.TokenValidationParameters = new TokenValidationParameters
-		{
-			ValidateIssuer = true,
-			ValidIssuer = "GameApp.Api",
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
 
-			ValidateAudience = true,
-			ValidAudience = "GameApp.Mvc",
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
 
-			ValidateLifetime = true,
+            ValidateLifetime = true,
 
-			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("qwerty123456789*"))
-		};
-	});
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+        };
+    });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -93,8 +93,8 @@ app.MapControllers();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot/avatars")),
-	RequestPath = "/avatars"
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot/avatars")),
+    RequestPath = "/avatars"
 });
 
 app.Run();
