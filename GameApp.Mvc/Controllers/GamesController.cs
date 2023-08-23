@@ -6,7 +6,7 @@ namespace GameApp.Mvc.Controllers
     [Authorize]
     public class GamesController : Controller
     {
-        public IActionResult Index() 
+        public IActionResult Index()
         {
             return View();
         }

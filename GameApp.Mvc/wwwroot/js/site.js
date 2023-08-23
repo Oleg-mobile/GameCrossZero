@@ -5,4 +5,4 @@
 
 import validateToken from "./common/tokenValidator.js";
 
-validateToken();
+/*validateToken();*/

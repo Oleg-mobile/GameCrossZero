@@ -8,56 +8,56 @@ using System.Text;
 
 namespace GameApp.WebApi.Controllers
 {
-	public class AccountController : GameAppController
-	{
-		private readonly IConfiguration _configuration;
+    public class AccountController : GameAppController
+    {
+        private readonly IConfiguration _configuration;
 
-		public AccountController(GameContext context, IMapper mapper, IConfiguration configuration = null) : base(context, mapper)
-		{
-			_configuration = configuration;
-		}
+        public AccountController(GameContext context, IMapper mapper, IConfiguration configuration = null) : base(context, mapper)
+        {
+            _configuration = configuration;
+        }
 
-		// https://metanit.com/sharp/aspnet5/23.7.php
+        // https://metanit.com/sharp/aspnet5/23.7.php
 
-		[HttpPost("[action]")]
-		public IActionResult Login(string username, string password)
-		{
-			var identity = GetIdentity(username, password);
-			if (identity == null)
-			{
-				return BadRequest(new { errorText = "Invalid username or password." });
-			}
+        [HttpPost("[action]")]
+        public IActionResult Login(string username, string password)
+        {
+            var identity = GetIdentity(username, password);
+            if (identity == null)
+            {
+                return BadRequest(new { errorText = "Invalid username or password." });
+            }
 
-			var now = DateTime.UtcNow;
-			// создаем JWT-токен
-			var jwt = new JwtSecurityToken(
-			issuer: _configuration["JwtSettings:Issuer"],
-			audience: _configuration["JwtSettings:Audience"],
-			notBefore: now,
-					claims: identity,
-					expires: now.Add(TimeSpan.FromMinutes(60)),
-					signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"])), SecurityAlgorithms.HmacSha256));
-			var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+            issuer: _configuration["JwtSettings:Issuer"],
+            audience: _configuration["JwtSettings:Audience"],
+            notBefore: now,
+                    claims: identity,
+                    expires: now.Add(TimeSpan.FromMinutes(60)),
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"])), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-			return Ok(encodedJwt);
-		}
+            return Ok(encodedJwt);
+        }
 
-		private IEnumerable<Claim> GetIdentity(string username, string password)
-		{
-			var person = Context.Users.FirstOrDefault(x => x.Login == username && x.Password == password);
-			if (person != null)
-			{
-				var claims = new List<Claim>
-				{
-					new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-					new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role.ToString())
-				};
+        private IEnumerable<Claim> GetIdentity(string username, string password)
+        {
+            var person = Context.Users.FirstOrDefault(x => x.Login == username && x.Password == password);
+            if (person != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role.ToString())
+                };
 
-				return claims;
-			}
+                return claims;
+            }
 
-			// если пользователя не найдено
-			return null;
-		}
-	}
+            // если пользователя не найдено
+            return null;
+        }
+    }
 }

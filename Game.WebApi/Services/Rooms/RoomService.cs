@@ -129,7 +129,7 @@ namespace GameApp.WebApi.Services.Rooms
                 return null;
             }
 
-            var opponent = Context.Users.FirstOrDefault(u => u.CurrentRoomId == player.CurrentRoomId  && u.Id != player.Id);
+            var opponent = Context.Users.FirstOrDefault(u => u.CurrentRoomId == player.CurrentRoomId && u.Id != player.Id);
 
             return new CurrentRoomDto
             {
