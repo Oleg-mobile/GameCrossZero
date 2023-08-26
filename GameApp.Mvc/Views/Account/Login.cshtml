@@ -5,19 +5,18 @@
     Layout = null;
 }
 
-Login
-<form method="post" asp-controller="Account" asp-action="Login">
+<form method="post" asp-controller="Account" asp-action="Login" class="account">
     <fieldset>
-        <legend>Login</legend>
+        <legend>Авторизация</legend>
         <div class="form-group">
-            <label>UserName</label>
+            <label>Имя пользователя</label>
             <input name="UserName" type="text" class="form-control"  placeholder="Enter UserName">
         </div>
         <div class="form-group">
-            <label>Password</label>
+            <label>Пароль</label>
             <input name="Password" type="password" class="form-control"  placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary">Войти</button>
     </fieldset>
     @if (ViewBag.ValidationMessage != null)
     {
