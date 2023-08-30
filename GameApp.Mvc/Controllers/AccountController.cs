@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using GameApp.Mvc.ViewModels.Account;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -21,19 +22,24 @@ namespace GameApp.Mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string userName, string Password)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var token = await LoginAsync("https://localhost:7272/api/Account/Login", userName, Password);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var token = await LoginAsync("https://localhost:7272/api/Account/Login", model.Login, model.Password);
 
             if (token == null)
             {
                 ViewBag.ValidationMessage = "Не правильно введён логин и/или пароль";
 
-                return View();
+                return View(model);
             }
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Name, userName));
+            identity.AddClaim(new Claim(ClaimTypes.Name, model.Login));
             //if (obj.Role != null)
             //{
             //    identity.AddClaim(new Claim(ClaimTypes.Role, obj.Role));

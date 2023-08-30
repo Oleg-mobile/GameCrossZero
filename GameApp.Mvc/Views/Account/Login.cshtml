@@ -1,25 +1,53 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using GameApp.Mvc.ViewModels.Account
+@model LoginViewModel
+
 @{
     Layout = null;
 }
 
-<form method="post" asp-controller="Account" asp-action="Login" class="account">
-    <fieldset>
-        <legend>Авторизация</legend>
-        <div class="form-group">
-            <label>Имя пользователя</label>
-            <input name="UserName" type="text" class="form-control"  placeholder="Enter UserName">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Авторизация - GameApp.Mvc</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div class="card">
+            <h5 class="card-header">Авторизация</h5>
+            <div class="card-body">
+                <form method="post" asp-controller="Account" asp-action="Login" class="account">
+
+                    <div class="mb-3">
+                        <label asp-for="Login" class="form-label">Логин</label>
+                        <input asp-for="Login" type="text" class="form-control" placeholder="Введите логин">
+                        <span asp-validation-for="Login" style="color: red"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Пароль</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Введите пароль" value="@Model?.Password">
+                        <span asp-validation-for="Password" style="color: red"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+
+                    @if (ViewBag.ValidationMessage != null)
+                    {
+                        <span style="color: red">@ViewBag.ValidationMessage</span>
+                    }
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Пароль</label>
-            <input name="Password" type="password" class="form-control"  placeholder="Password">
+
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - GameApp.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-        <button type="submit" class="btn btn-primary">Войти</button>
-    </fieldset>
-    @if (ViewBag.ValidationMessage != null)
-    {
-        <span>@ViewBag.ValidationMessage</span>
-    }
-</form>
+    </footer>
+</body>
+</html>

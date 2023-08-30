@@ -1,4 +1,4 @@
-namespace GameApp.Mvc.Models
+namespace GameApp.Mvc.ViewModels
 {
     public class ErrorViewModel
     {

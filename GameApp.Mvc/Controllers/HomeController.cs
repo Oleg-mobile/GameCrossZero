@@ -1,4 +1,4 @@
-﻿using GameApp.Mvc.Models;
+﻿using GameApp.Mvc.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
