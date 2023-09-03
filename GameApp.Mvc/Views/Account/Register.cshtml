@@ -1,5 +1,5 @@
 ﻿@using GameApp.Mvc.ViewModels.Account
-@model LoginViewModel
+@model RegisterViewModel
 
 @{
     Layout = null;
@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Авторизация - GameApp.Mvc</title>
+    <title>Регистрация - GameApp.Mvc</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 <body>
@@ -18,9 +18,9 @@
     <div class="container-fluid">
 
         <div class="card">
-            <h5 class="card-header">Авторизация</h5>
+            <h5 class="card-header">Регистрация</h5>
             <div class="card-body">
-                <form method="post" asp-controller="Account" asp-action="Login" class="account">
+                <form method="post" asp-controller="Account" asp-action="Register" class="account">
 
                     <div class="mb-3">
                         <label asp-for="Login" class="form-label">Логин</label>
@@ -32,15 +32,12 @@
                         <input asp-for="Password" type="password" class="form-control" placeholder="Введите пароль" value="@Model?.Password">
                         <span asp-validation-for="Password" style="color: red"></span>
                     </div>
-                    <div class="controls">
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                        <a asp-area=""
-                           asp-controller="Account"
-                           asp-action="Register"
-                           class="links">
-                            Регистрация
-                        </a>
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">Повторите пароль</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Повторите пароль" value="@Model?.ConfirmPassword">
+                        <span asp-validation-for="ConfirmPassword" style="color: red"></span>
                     </div>
+                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
 
                     @if (ViewBag.ValidationMessage != null)
                     {
@@ -49,7 +46,6 @@
                 </form>
             </div>
         </div>
-
     </div>
 
     <footer class="border-top footer text-muted">

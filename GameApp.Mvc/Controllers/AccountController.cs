@@ -16,7 +16,7 @@ namespace GameApp.Mvc.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        public IActionResult Login()
+        public IActionResult Login()  // TODO нужен?
         {
             return View();
         }
@@ -69,6 +69,22 @@ namespace GameApp.Mvc.Controllers
             }
 
             return null;
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+                return View(model);
+            //}
+
+            //return RedirectToAction("Login", "Account");
         }
     }
 }

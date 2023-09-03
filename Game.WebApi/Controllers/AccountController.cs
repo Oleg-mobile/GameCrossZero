@@ -59,5 +59,11 @@ namespace GameApp.WebApi.Controllers
             // если пользователя не найдено
             return null;
         }
+
+        [HttpPost("[action]")]
+        public IActionResult Register()
+        {
+            return Ok();
+        }
     }
 }
