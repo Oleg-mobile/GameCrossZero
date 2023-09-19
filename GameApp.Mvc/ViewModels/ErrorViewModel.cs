@@ -1,6 +1,6 @@
 namespace GameApp.Mvc.ViewModels
 {
-    public class ErrorViewModel
+    public class ErrorViewModel  // TODO зачем?
     {
         public string? RequestId { get; set; }
 

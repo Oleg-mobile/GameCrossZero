@@ -81,7 +81,7 @@ namespace GameApp.Mvc.Controllers
         {
             //if (!ModelState.IsValid)
             //{
-                return View(model);
+                return View("Register", model);
             //}
 
             //return RedirectToAction("Login", "Account");

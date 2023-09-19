@@ -11,7 +11,7 @@ namespace GameApp.Mvc.Middlewares
 
         public UnauthorizedMiddleware(RequestDelegate next, IConfiguration configuration)
         {
-            this.next = next;
+            this.next = next;  // TODO зачем this?
             _configuration = configuration;
         }
 

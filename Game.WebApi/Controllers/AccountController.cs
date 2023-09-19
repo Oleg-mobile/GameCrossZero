@@ -8,16 +8,16 @@ using System.Text;
 
 namespace GameApp.WebApi.Controllers
 {
+    // TODO вынести методы в сервис
     public class AccountController : GameAppController
     {
         private readonly IConfiguration _configuration;
 
+        // TODO лишний mapper во всех контроллерах
         public AccountController(GameContext context, IMapper mapper, IConfiguration configuration = null) : base(context, mapper)
         {
             _configuration = configuration;
         }
-
-        // https://metanit.com/sharp/aspnet5/23.7.php
 
         [HttpPost("[action]")]
         public IActionResult Login(string username, string password)
@@ -43,7 +43,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         private IEnumerable<Claim> GetIdentity(string username, string password)
-        {
+		{
             var person = Context.Users.FirstOrDefault(x => x.Login == username && x.Password == password);
             if (person != null)
             {
