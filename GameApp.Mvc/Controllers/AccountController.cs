@@ -79,11 +79,12 @@ namespace GameApp.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-                return View("Register", model);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
+            return View();
             //return RedirectToAction("Login", "Account");
         }
     }
