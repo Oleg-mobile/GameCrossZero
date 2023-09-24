@@ -1,4 +1,5 @@
-﻿using GameApp.Mvc.ViewModels.Account;
+﻿using GameApp.HttpClient;
+using GameApp.Mvc.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,11 @@ namespace GameApp.Mvc.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly GameAppHttpClientV1Base _httpClient;
 
-        public AccountController(IHttpClientFactory httpClientFactory)
+        public AccountController(GameAppHttpClientV1Base httpClient)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
         }
 
         public IActionResult Login()  // TODO нужен?
@@ -29,7 +30,7 @@ namespace GameApp.Mvc.Controllers
                 return View(model);
             }
 
-            var token = await LoginAsync("https://localhost:7272/api/Account/Login", model.Login, model.Password);
+            var token = await _httpClient.LoginAsync(model.Login, model.Password);
 
             if (token == null)
             {
@@ -56,19 +57,6 @@ namespace GameApp.Mvc.Controllers
             });
 
             return RedirectToAction("Index", "Home");
-        }
-
-        private async Task<string> LoginAsync(string url, string login, string password)
-        {
-            var client = _httpClientFactory.CreateClient();
-            HttpResponseMessage response = await client.PostAsync(url + $"?username={login}&password={password}", null);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var token = await response.Content.ReadAsStringAsync();
-                return token;
-            }
-
-            return null;
         }
 
         public IActionResult Register()

@@ -1,5 +1,7 @@
+using GameApp.HttpClient;
 using GameApp.Mvc.Middlewares;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<GameAppHttpClientV1Base>(c => {
+    c.BaseAddress = new Uri(builder.Configuration["Api:Url"]);
+});
 
 var app = builder.Build();
 

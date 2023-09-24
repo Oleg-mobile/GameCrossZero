@@ -20,6 +20,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult Login(string username, string password)
         {
             var identity = GetIdentity(username, password);
