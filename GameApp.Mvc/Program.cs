@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddHttpClient<GameAppHttpClientV1Base>(c => {
+builder.Services.AddHttpClient<GameAppHttpClient>(c => {
     c.BaseAddress = new Uri(builder.Configuration["Api:Url"]);
 });
 

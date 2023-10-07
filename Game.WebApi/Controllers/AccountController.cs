@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
+using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,7 +21,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
         public IActionResult Login(string username, string password)
         {
             var identity = GetIdentity(username, password);
@@ -40,7 +41,11 @@ namespace GameApp.WebApi.Controllers
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"])), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return Ok(encodedJwt);
+            return Ok(new TokenDto
+            {
+                Token = encodedJwt,
+                Expires = now.Add(TimeSpan.FromMinutes(60))
+            });
         }
 
         private IEnumerable<Claim> GetIdentity(string username, string password)

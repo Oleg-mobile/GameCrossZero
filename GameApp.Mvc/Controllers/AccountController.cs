@@ -10,9 +10,9 @@ namespace GameApp.Mvc.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly GameAppHttpClientV1Base _httpClient;
+        private readonly GameAppHttpClient _httpClient;
 
-        public AccountController(GameAppHttpClientV1Base httpClient)
+        public AccountController(GameAppHttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -48,12 +48,12 @@ namespace GameApp.Mvc.Controllers
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            Response.Cookies.Append("token", token, new CookieOptions
+            Response.Cookies.Append("token", token.Token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddHours(1)
+                Expires = token.Expires
             });
 
             return RedirectToAction("Index", "Home");

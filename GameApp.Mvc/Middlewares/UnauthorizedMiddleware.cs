@@ -17,7 +17,12 @@ namespace GameApp.Mvc.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Cookies.TryGetValue("token", out string token) && context.Request.Path != "/Account/Login")
+            var publicRequestPaths = new[] {
+                "/Account/Login",
+                "/Account/Register"
+            };
+
+            if (context.Request.Cookies.TryGetValue("token", out string token) && !publicRequestPaths.Contains(context.Request.Path.Value))
             {
                 if (!AttachUserToContext(context, token))
                 {
@@ -25,7 +30,7 @@ namespace GameApp.Mvc.Middlewares
                 }
             }
 
-            if (!context.Request.Cookies.TryGetValue("token", out string token2) && context.Request.Path != "/Account/Login")
+            if (!context.Request.Cookies.TryGetValue("token", out string token2) && !publicRequestPaths.Contains(context.Request.Path.Value))
             {
                 context.Response.Redirect("/Account/Login");
             }
