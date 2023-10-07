@@ -25,17 +25,19 @@ namespace GameApp.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message);  // TODO [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]  ?
             }
         }
 
         [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(string? searchString = null)
         {
             return Ok(await _userService.GetAll(searchString));
         }
 
         [HttpPost("[action]")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangeReady(int userId)
         {
             try

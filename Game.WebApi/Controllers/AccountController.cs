@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
+using GameApp.WebApi.Services.Users;
 using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +14,13 @@ namespace GameApp.WebApi.Controllers
     public class AccountController : GameAppController
     {
         private readonly IConfiguration _configuration;
+        private readonly IUserService _userService;
 
-        // TODO лишний mapper во всех контроллерах
-        public AccountController(GameContext context, IMapper mapper, IConfiguration configuration = null) : base(context, mapper)
+        // TODO mapper в контроллерах и в сервисах
+        public AccountController(GameContext context, IMapper mapper, IUserService userService, IConfiguration configuration = null) : base(context, mapper)
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpPost("[action]")]
@@ -49,7 +52,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         private IEnumerable<Claim> GetIdentity(string username, string password)
-		{
+        {
             var person = Context.Users.FirstOrDefault(x => x.Login == username && x.Password == password);
             if (person != null)
             {
@@ -67,8 +70,22 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult Register()
+        public IActionResult Register(string username, string password)
         {
+            var isExist = Context.Users.Any(x => x.Login == username);
+            if (isExist)
+            {
+                return BadRequest(new { errorText = "The user already exists" });
+            }
+
+            CreateUserDto createUserDto = new CreateUserDto  // TODO создать свою дто?
+            {
+                Login = username,
+                Password = password
+            };
+
+            _userService.Create(createUserDto);
+
             return Ok();
         }
     }

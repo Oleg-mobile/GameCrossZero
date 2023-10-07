@@ -3,7 +3,6 @@ using GameApp.Mvc.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Security.Claims;
 
 namespace GameApp.Mvc.Controllers
@@ -72,8 +71,31 @@ namespace GameApp.Mvc.Controllers
                 return View(model);
             }
 
-            return View();
-            //return RedirectToAction("Login", "Account");
+            // var user = await _httpClient.GetAllAsync(model.Login);
+            //if (user is not null)
+            //{
+            //    return View(model);
+            //}
+
+            await _httpClient.RegisterAsync(model.Login, model.Password);
+
+            var token = await _httpClient.LoginAsync(model.Login, model.Password);
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(ClaimTypes.Name, model.Login));
+
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            Response.Cookies.Append("token", token.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = token.Expires
+            });
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

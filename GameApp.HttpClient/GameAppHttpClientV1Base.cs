@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameApp.HttpClient
+﻿namespace GameApp.HttpClient
 {
     public partial class GameAppHttpClientV1Base
     {

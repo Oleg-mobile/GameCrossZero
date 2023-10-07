@@ -32,6 +32,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<RoomDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _roomService.GetAll());
@@ -80,6 +81,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpGet("[action]")]
+        [ProducesResponseType(typeof(CurrentRoomDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCurrentRoom()
         {
             return Ok(await _roomService.GetCurrentRoom());

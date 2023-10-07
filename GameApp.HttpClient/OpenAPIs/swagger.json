@@ -55,6 +55,22 @@
         "tags": [
           "Account"
         ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -153,7 +169,33 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoomDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoomDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoomDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -249,7 +291,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentRoomDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentRoomDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentRoomDto"
+                }
+              }
+            }
           }
         }
       }
@@ -301,7 +360,33 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -323,7 +408,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         }
       }
@@ -400,6 +502,28 @@
         },
         "additionalProperties": false
       },
+      "CurrentRoomDto": {
+        "type": "object",
+        "properties": {
+          "isPlayerRoomManager": {
+            "type": "boolean"
+          },
+          "isGameStarted": {
+            "type": "boolean"
+          },
+          "opponent": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "player": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "roomName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "EnterRoomDto": {
         "type": "object",
         "properties": {
@@ -440,6 +564,31 @@
         "type": "integer",
         "format": "int32"
       },
+      "RoomDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isProtected": {
+            "type": "boolean"
+          },
+          "countPlayersInRoom": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "TokenDto": {
         "type": "object",
         "properties": {
@@ -450,6 +599,43 @@
           "expires": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "login": {
+            "type": "string",
+            "nullable": true
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/RoleType"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true
+          },
+          "raiting": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentRoomId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isReadyToPlay": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
