@@ -55,7 +55,7 @@ namespace GameApp.Mvc.Controllers
                 Expires = token.Expires
             });
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Rooms");
         }
 
         public IActionResult Register()
@@ -95,7 +95,7 @@ namespace GameApp.Mvc.Controllers
                 Expires = token.Expires
             });
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Rooms");
         }
     }
 }
