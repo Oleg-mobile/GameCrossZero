@@ -1,4 +1,8 @@
 .room {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+
 	&__players {
 		display: flex;
 		justify-content: center;

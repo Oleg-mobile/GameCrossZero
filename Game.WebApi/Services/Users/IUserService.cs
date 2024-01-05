@@ -7,5 +7,6 @@ namespace GameApp.WebApi.Services.Users
         Task Create(CreateUserDto input);
         Task<IEnumerable<UserDto>> GetAll(string? searchString = null);
         Task<bool> ChangeReady(int userId);
+        Task<int> GetId(string login);
     }
 }

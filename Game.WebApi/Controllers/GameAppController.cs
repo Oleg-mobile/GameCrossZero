@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/[controller]")]   //  TODO [HttpPost("[action]")]  ???
+	[ApiController]
     public abstract class GameAppController : ControllerBase
     {
         protected GameContext Context { get; private set; }

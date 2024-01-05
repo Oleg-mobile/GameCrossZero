@@ -2,6 +2,7 @@
 using GameApp.Domain;
 using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Rooms.Dto;
+using GameApp.WebApi.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +12,15 @@ namespace GameApp.WebApi.Controllers
     public class RoomsController : GameAppController
     {
         private readonly IRoomService _roomService;
+        private readonly IUserService _userService;
 
-        public RoomsController(GameContext context, IMapper mapper, IRoomService roomService) : base(context, mapper)
-        {
-            _roomService = roomService;
-        }
+		public RoomsController(GameContext context, IMapper mapper, IRoomService roomService, IUserService userService) : base(context, mapper)
+		{
+			_roomService = roomService;
+			_userService = userService;
+		}
 
-        [HttpPost("[action]")]
+		[HttpPost("[action]")]
         public async Task<IActionResult> Create(CreateRoomDto input)
         {
             try
@@ -62,8 +65,8 @@ namespace GameApp.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
+                return BadRequest(ex.Message);   //  TODO ошибка, если комната одна и её id у юзера в CurrentRoomId
+			}
         }
 
         [HttpDelete("[action]")]
@@ -84,7 +87,10 @@ namespace GameApp.WebApi.Controllers
         [ProducesResponseType(typeof(CurrentRoomDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCurrentRoom()
         {
-            return Ok(await _roomService.GetCurrentRoom());
+            var loginCurrentPlayer = User.Identity.Name;   //  TODO Identity?   а если Null?
+			var playerId = await _userService.GetId(loginCurrentPlayer);
+
+            return Ok(await _roomService.GetCurrentRoom(playerId));
         }
     }
 }

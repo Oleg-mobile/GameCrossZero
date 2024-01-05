@@ -46,5 +46,13 @@ namespace GameApp.WebApi.Services.Users
 
             return Mapper.Map<IEnumerable<UserDto>>(await query.ToListAsync());
         }
-    }
+
+		public async Task<int> GetId(string login)
+		{
+			return await Context.Users
+                .Where(u => u.Login == login)
+                .Select(u => u.Id)
+                .FirstAsync();
+		}
+	}
 }

@@ -34,7 +34,7 @@ namespace GameApp.WebApi.Controllers
             }
 
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
+
             var jwt = new JwtSecurityToken(
             issuer: _configuration["JwtSettings:Issuer"],
             audience: _configuration["JwtSettings:Audience"],
@@ -65,28 +65,28 @@ namespace GameApp.WebApi.Controllers
                 return claims;
             }
 
-            // если пользователя не найдено
             return null;
         }
 
         [HttpPost("[action]")]
         public IActionResult Register(string username, string password)
         {
-            var isExist = Context.Users.Any(x => x.Login == username);
-            if (isExist)
+            try
             {
-                return BadRequest(new { errorText = "The user already exists" });
+                var createUserDto = new CreateUserDto
+                {
+                    Login = username,
+                    Password = password
+                };
+
+                _userService.Create(createUserDto);   // TODO async/await
+
+                return Ok();
             }
-
-            CreateUserDto createUserDto = new CreateUserDto  // TODO создать свою дто?
-            {
-                Login = username,
-                Password = password
-            };
-
-            _userService.Create(createUserDto);
-
-            return Ok();
-        }
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
     }
 }

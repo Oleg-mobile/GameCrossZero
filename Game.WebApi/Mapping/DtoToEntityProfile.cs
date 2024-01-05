@@ -11,7 +11,7 @@ namespace GameApp.WebApi.Mapping
         public DtoToEntityProfile()
         {
             CreateMap<CreateUserDto, User>().ReverseMap();
-            CreateMap<User, UserDto>();
+			CreateMap<User, UserDto>();
             CreateMap<CreateRoomDto, Room>().ReverseMap();
             CreateMap<CreateGameDto, Game>().ReverseMap();
             CreateMap<RoomDto, Room>();

@@ -50,7 +50,7 @@ namespace GameApp.WebApi.Controllers
             }
         }
 
-        // TODO Нужно ли удалять. Что делать со статусами?
+        // TODO Нужно ли удалять?
         // TODO Нужен ли поиск по id?
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using GameApp.Domain;
+using GameApp.Domain.Migrations;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Rooms.Dto;
 using GameApp.WebApi.Services.Users.Dto;
@@ -45,9 +46,19 @@ namespace GameApp.WebApi.Services.Rooms
             if (room is null)
             {
                 throw new Exception($"Комната с Id = {id} не существует");
-            }
+			}
 
-            Context.Rooms.Remove(room);
+			var users = Context.Users.Where(u => u.CurrentRoomId == id);
+			if (users is not null)
+			{
+                foreach (var u in users)
+                {
+                    u.CurrentRoomId = null;
+					Context.Users.Update(u);
+				}	
+			}
+
+			Context.Rooms.Remove(room);    //  TODO  чистить поля у юзера и игры (см. exit)
             await Context.SaveChangesAsync();
         }
 
@@ -59,7 +70,7 @@ namespace GameApp.WebApi.Services.Rooms
             }
             catch (ValidationException ex)
             {
-                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
+                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;   // TODO забыл как работает конструкция)
                 throw new Exception(message);
             }
 
@@ -119,9 +130,9 @@ namespace GameApp.WebApi.Services.Rooms
             }).ToListAsync());
         }
 
-        public async Task<CurrentRoomDto> GetCurrentRoom()
+        public async Task<CurrentRoomDto> GetCurrentRoom(int playerId)
         {
-            var playerId = 2; // TODO убрать, кгда сделает токены
+
             var player = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == playerId);
 
             if (player.CurrentRoom is null)

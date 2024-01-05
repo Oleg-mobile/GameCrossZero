@@ -22,7 +22,7 @@ namespace GameApp.Mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)  //  TODO возможна ли множественная авторизация?
         {
             if (!ModelState.IsValid)
             {
@@ -49,9 +49,9 @@ namespace GameApp.Mvc.Controllers
 
             Response.Cookies.Append("token", token.Token, new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
+                //HttpOnly = true,
+                //Secure = true,
+                //SameSite = SameSiteMode.None,
                 Expires = token.Expires
             });
 

@@ -12,13 +12,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 			return;
 		}
 
+		document.querySelector('#currentRoomName').innerText = 'Комната - ' + currentRoom.roomName;
+
 		document.querySelector('#playerNickname').textContent = currentRoom.player.nickname;
-		document.querySelector('#player img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.player.avatar}`;
+		if (currentRoom.player.avatar) {
+			document.querySelector('#player img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.player.avatar}`;
+		}
+
 
 		if (currentRoom.opponent)
 		{
 			document.querySelector('#opponentNickname').textContent = currentRoom.opponent.nickname;
-			document.querySelector('#opponent img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
+			if (currentRoom.opponent.avatar) {
+				document.querySelector('#opponent img').src = `${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
+			}
 		}
 
 		roomModal.show();
@@ -50,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 							src = "/img/locked-padlock.ico"
 							alt = "lock"
 						/> `}
-						${room.countPlayersInRoom} / 2
+						${room.countPlayersInRoom} / ${APP_CONSTS.MAX_NUMBER_OF_PLAYERS}
 					</div>
 				</div>`);
         });
@@ -65,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const dto = {
 			name: roomNameInput.value,
 			password: roomPasswordInput.value,
-			managerId: 2
+			managerId: 2                         // Заглушка ?
 		}
 
 		await roomsService.create(dto);
@@ -73,4 +80,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 		await initRooms();
 		await redirectToRoom();
 	});
+
+	document.querySelector('#exitRoomBtn').addEventListener('click', async () => {
+		const currentRoom = await roomsService.getCurrentRoom();
+		if (!currentRoom) {
+			return;
+		}
+
+		const dto = {
+			roomId: currentRoom.player.currentRoomId,
+			userId: currentRoom.player.id
+		}
+
+		await roomsService.exit(dto);
+		roomModal.hide();
+		await initRooms();
+	});
+
 })

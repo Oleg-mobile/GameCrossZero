@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GameApp.Mvc</title>
-    @await Html.PartialAsync("_Styles")
+    @await Html.PartialAsync("Layout/_Styles")
 </head>
 <body>
     <header class="header">
@@ -57,7 +57,7 @@
             &copy; 2023 - GameApp.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    @await Html.PartialAsync("_Scripts")
+    @await Html.PartialAsync("Layout/_Scripts")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
