@@ -77,12 +77,6 @@ https://go.microsoft.com/fwlink/?LinkID=397860 *@ @{ }
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="currentRoomName">Комната </h5>
-				<button
-					type="button"
-					class="btn-close btn-close-white"
-					data-bs-dismiss="modal"
-					aria-label="Close"
-				></button>
 
 				<button 
 					type="button"
@@ -103,7 +97,7 @@ https://go.microsoft.com/fwlink/?LinkID=397860 *@ @{ }
 							id="player">
 							<div class="room-player__avatar">
 								<img
-									class="room-player__logo"
+									class="room-player__logo circle"
 									src="/img/gambler.ico"
 									alt=""
 								/>
@@ -126,7 +120,7 @@ https://go.microsoft.com/fwlink/?LinkID=397860 *@ @{ }
 							id="opponent">
 							<div class="room-player__avatar">
 								<img
-									class="room-player__logo"
+									class="room-player__logo circle"
 									src="/img/zhdun.ico"
 									alt=""
 								/>
@@ -141,9 +135,16 @@ https://go.microsoft.com/fwlink/?LinkID=397860 *@ @{ }
 
 					<button 
 						type="button"
-						class="btn btn-primary"
+						class="btn btn-primary room__readybtn"
 					>
 						Готов
+					</button>
+
+					<button 
+						type="button"
+						class="btn btn-primary room__playbtn"
+					>
+						Играть
 					</button>
 
 				</div>

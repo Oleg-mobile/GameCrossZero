@@ -32,6 +32,10 @@
 		color: $name-text;
 	}
 
+	&__enterbtn {
+		margin-left: 20px;
+	}
+
 	&__info {
 		display: flex;
 		align-items: center;

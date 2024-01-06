@@ -9,6 +9,10 @@
 		align-items: center;
 		padding: 40px;
 	}
+
+	.btn + .btn {
+		margin-top: 20px;
+	}
 }
 
 .room-player {
@@ -27,4 +31,15 @@
 		margin-left: 40px;
 		margin-right: 40px;
 	}
+}
+
+.circle {
+	width: 120px;
+	height: 120px;
+	border: 1px solid $count-text;
+	border-radius: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0px 0px 4px $white-text;
 }
