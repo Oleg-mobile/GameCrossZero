@@ -10,6 +10,7 @@ namespace GameApp.WebApi.Controllers
     {
         protected GameContext Context { get; private set; }
         protected IMapper Mapper { get; set; }
+        protected string? CurrentUserLogin => User.Identity?.Name;
 
         protected GameAppController(GameContext context, IMapper mapper)
         {

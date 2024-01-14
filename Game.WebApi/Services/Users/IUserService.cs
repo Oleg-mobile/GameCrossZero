@@ -8,5 +8,6 @@ namespace GameApp.WebApi.Services.Users
         Task<IEnumerable<UserDto>> GetAll(string? searchString = null);
         Task<bool> ChangeReady(int userId);
         Task<int> GetId(string login);
+        Task<string> GetAvatarAsync(string login);
     }
 }

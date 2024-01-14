@@ -5,6 +5,16 @@ class UsersService {
         this.url = APP_CONSTS.SERVER_URL + 'api/Users';
     }
 
+    async getAvatar() {
+        return await axios.get(this.url + '/GetAvatar')
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     async getAll() {
         return await axios.get(this.url + '/GetAll')
             .then(function (response) {

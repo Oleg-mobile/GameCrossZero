@@ -1,4 +1,5 @@
 ﻿import roomsService from '../../Api/roomsService.js';
+import usersService from '../../Api/usersService.js';
 import APP_CONSTS from '../../common/appConsts.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -56,14 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 							alt="room logo"
 						/>
 						${room.name}
-						
-						<button 
-							type="button"
-							class="btn btn-primary rooms__enterbtn"
-						>
-						Войти
-						</button>
-
 					</div>
 					<div class="rooms__info">
 						${
@@ -121,17 +114,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 		});
 
 	document
-		.querySelector('.rooms__enterbtn')
+		.querySelector('.rooms__name')
 		.addEventListener('click', async () => {
-			// enter
-			// Если есть пароль?
-			//const dto = {
-			//	name: ,
-			//	password: ,
-			//	managerId:
-			//}
-			//await roomsService.enter(dto);
-			//await initRooms();
-			//await redirectToRoom();
+			//usersService.changeReady(userId);   // Нужен userId
 		});
 });

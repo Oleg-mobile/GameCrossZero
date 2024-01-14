@@ -30,6 +30,7 @@ namespace GameApp.Mvc.Middlewares
                 }
             }
 
+            // TODO Зачем?
             if (!context.Request.Cookies.TryGetValue("token", out string token2) && !publicRequestPaths.Contains(context.Request.Path.Value))
             {
                 context.Response.Redirect("/Account/Login");
@@ -59,7 +60,7 @@ namespace GameApp.Mvc.Middlewares
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Invalid");
 

@@ -3,6 +3,6 @@
 
 // Write your JavaScript code.
 
-import validateToken from "./common/tokenValidator.js";
+//import validateToken from "./common/tokenValidator.js";
 
 /*validateToken();*/

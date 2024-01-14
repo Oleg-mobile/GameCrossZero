@@ -2,10 +2,12 @@
 using GameApp.Domain;
 using GameApp.WebApi.Services.Users;
 using GameApp.WebApi.Services.Users.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameApp.WebApi.Controllers
 {
+    [Authorize]
     public class UsersController : GameAppController
     {
         private readonly IUserService _userService;
@@ -15,19 +17,24 @@ namespace GameApp.WebApi.Controllers
             _userService = userService;
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Create(CreateUserDto input)
-        {
-            try
-            {
-                await _userService.Create(input);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);  // TODO [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]  ?
-            }
-        }
+		[HttpGet("[action]")]
+		[ProducesResponseType(typeof(UserShortDto), StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetAvatarAsync()
+		{
+			try
+			{
+				var avatar = await _userService.GetAvatarAsync(CurrentUserLogin!);
+                return Ok(new UserShortDto
+                {
+                    Login = CurrentUserLogin!,
+                    Avatar = avatar
+                });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);  // TODO [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]  ?
+			}
+		}
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
