@@ -51,7 +51,7 @@ namespace GameApp.WebApi.Controllers
             });
         }
 
-        private IEnumerable<Claim> GetIdentity(string username, string password)
+        private IEnumerable<Claim> GetIdentity(string username, string password)   // TODO сделать асинхронным?
         {
             var person = Context.Users.FirstOrDefault(x => x.Login == username && x.Password == password);
             if (person != null)
@@ -69,7 +69,7 @@ namespace GameApp.WebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult Register(string username, string password)
+        public async Task<IActionResult> Register(string username, string password)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace GameApp.WebApi.Controllers
                     Password = password
                 };
 
-                _userService.Create(createUserDto);   // TODO async/await
+                await _userService.Create(createUserDto);
 
                 return Ok();
             }

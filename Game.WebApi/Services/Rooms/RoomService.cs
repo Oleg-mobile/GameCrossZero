@@ -58,7 +58,7 @@ namespace GameApp.WebApi.Services.Rooms
 				}	
 			}
 
-			Context.Rooms.Remove(room);    //  TODO  чистить поля у юзера и игры (см. exit)
+			Context.Rooms.Remove(room);
             await Context.SaveChangesAsync();
         }
 
@@ -70,7 +70,7 @@ namespace GameApp.WebApi.Services.Rooms
             }
             catch (ValidationException ex)
             {
-                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;   // TODO забыл как работает конструкция)
+                var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
                 throw new Exception(message);
             }
 

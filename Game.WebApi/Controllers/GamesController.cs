@@ -20,7 +20,7 @@ namespace GameApp.WebApi.Controllers
         {
             try
             {
-                await _gameService.Create(input);
+                await _gameService.CreateAsync(input);
                 return Ok();
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace GameApp.WebApi.Controllers
         {
             try
             {
-                await _gameService.Start(roomId);
+                await _gameService.StartAsync(roomId);
                 return Ok();
             }
             catch (Exception ex)

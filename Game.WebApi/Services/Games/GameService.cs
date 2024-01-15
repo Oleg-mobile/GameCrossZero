@@ -15,7 +15,7 @@ namespace GameApp.WebApi.Services.Games
             _startGameValidator = startGameValidator;
         }
 
-        public async Task Create(CreateGameDto input)
+        public async Task CreateAsync(CreateGameDto input)
         {
             var isExist = Context.Games.Any(u => u.Id == input.Id);
 
@@ -29,7 +29,7 @@ namespace GameApp.WebApi.Services.Games
             await Context.SaveChangesAsync();
         }
 
-        public async Task Start(int roomId)
+        public async Task StartAsync(int roomId)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace GameApp.WebApi.Services.Games
             }
 
             game.RoomId = roomId;
-            await Create(game);
+            await CreateAsync(game);
             Context.SaveChanges();
 
             var userGame = new UserGame

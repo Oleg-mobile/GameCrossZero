@@ -4,7 +4,7 @@ namespace GameApp.WebApi.Services.Games
 {
     public interface IGameService
     {
-        Task Create(CreateGameDto input);
-        Task Start(int roomId);
+        Task CreateAsync(CreateGameDto input);
+        Task StartAsync(int roomId);
     }
 }
