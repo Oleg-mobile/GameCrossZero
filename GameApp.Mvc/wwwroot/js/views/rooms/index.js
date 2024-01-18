@@ -85,8 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		.addEventListener('click', async () => {
 			const dto = {
 				name: roomNameInput.value,
-				password: roomPasswordInput.value,
-				managerId: 2, // Заглушка ?
+				password: roomPasswordInput.value
 			};
 
 			await roomsService.create(dto);
@@ -116,6 +115,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 	document
 		.querySelector('.rooms__name')
 		.addEventListener('click', async () => {
-			//usersService.changeReady(userId);   // Нужен userId
+			usersService.changeReady();
 		});
 });

@@ -25,7 +25,8 @@ namespace GameApp.WebApi.Controllers
         {
             try
             {
-                await _roomService.Create(input);
+				var managerId = await _userService.GetId(User.Identity!.Name!);
+				await _roomService.Create(input, managerId);
                 return Ok();
             }
             catch (Exception ex)
@@ -46,7 +47,8 @@ namespace GameApp.WebApi.Controllers
         {
             try
             {
-                await _roomService.Enter(input);
+				var userId = await _userService.GetId(User.Identity!.Name!);
+				await _roomService.Enter(input, userId);
                 return Ok();
             }
             catch (Exception ex)
@@ -87,8 +89,7 @@ namespace GameApp.WebApi.Controllers
         [ProducesResponseType(typeof(CurrentRoomDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCurrentRoom()
         {
-            var loginCurrentPlayer = User.Identity.Name;   //  TODO Identity?   а если Null?
-			var playerId = await _userService.GetId(loginCurrentPlayer);
+			var playerId = await _userService.GetId(User.Identity!.Name!);
 
             return Ok(await _roomService.GetCurrentRoom(playerId));
         }

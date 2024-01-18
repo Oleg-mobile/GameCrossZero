@@ -45,11 +45,12 @@ namespace GameApp.WebApi.Controllers
 
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ChangeReady(int userId)
+        public async Task<IActionResult> ChangeReady()
         {
             try
             {
-                return Ok(await _userService.ChangeReady(userId));
+				var userId = await _userService.GetId(User.Identity!.Name!);
+				return Ok(await _userService.ChangeReady(userId));
             }
             catch (Exception ex)
             {

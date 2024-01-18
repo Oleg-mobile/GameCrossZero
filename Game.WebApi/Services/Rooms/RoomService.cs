@@ -20,7 +20,7 @@ namespace GameApp.WebApi.Services.Rooms
             _enterRoomValidator = enterRoomValidator;
         }
 
-        public async Task Create(CreateRoomDto input)
+        public async Task Create(CreateRoomDto input, int managerId)
         {
             var isExist = Context.Rooms.Any(r => r.Name == input.Name);
 
@@ -30,13 +30,14 @@ namespace GameApp.WebApi.Services.Rooms
             }
 
             var room = Mapper.Map<Room>(input);
+            room.ManagerId = managerId;
 
             await Context.Rooms.AddAsync(room);
             await Context.SaveChangesAsync();
 
             var enterRoomDto = Mapper.Map<EnterRoomDto>(input);
             enterRoomDto.RoomId = room.Id;
-            await Enter(enterRoomDto);
+            await Enter(enterRoomDto, managerId);
         }
 
         public async Task Delete(int id)
@@ -62,7 +63,7 @@ namespace GameApp.WebApi.Services.Rooms
             await Context.SaveChangesAsync();
         }
 
-        public async Task Enter(EnterRoomDto input)
+        public async Task Enter(EnterRoomDto input, int userId)
         {
             try
             {
@@ -74,7 +75,7 @@ namespace GameApp.WebApi.Services.Rooms
                 throw new Exception(message);
             }
 
-            var user = await Context.Users.FindAsync(input.UserId);
+            var user = await Context.Users.FindAsync(userId);
             user.CurrentRoomId = input.RoomId;
             Context.Users.Update(user);
             await Context.SaveChangesAsync();

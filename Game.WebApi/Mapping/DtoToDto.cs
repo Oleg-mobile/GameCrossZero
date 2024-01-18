@@ -7,8 +7,7 @@ namespace GameApp.WebApi.Mapping
     {
         public DtoToDto()
         {
-            CreateMap<CreateRoomDto, EnterRoomDto>()
-                .ForMember(x => x.UserId, x => x.MapFrom(y => y.ManagerId));
+            CreateMap<CreateRoomDto, EnterRoomDto>();
         }
     }
 }

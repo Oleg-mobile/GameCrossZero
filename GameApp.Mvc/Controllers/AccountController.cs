@@ -89,13 +89,20 @@ namespace GameApp.Mvc.Controllers
 
             Response.Cookies.Append("token", token.Token, new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
+                //HttpOnly = true,
+                //Secure = true,
+                //SameSite = SameSiteMode.None,
                 Expires = token.Expires
             });
 
             return RedirectToAction("Index", "Rooms");
         }
+
+        public async Task<IActionResult> Logout()
+        {
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete("token");
+            return RedirectToAction("Login");
+		}
     }
 }
