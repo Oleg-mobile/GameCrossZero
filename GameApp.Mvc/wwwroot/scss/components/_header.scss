@@ -54,6 +54,12 @@
 			color: $white-text;
 		}
 
+		&__block {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+		}
+
 		&__raiting {
 			font-size: 20px;
 			font-weight: 400;
@@ -62,6 +68,13 @@
 		&__login {
 			font-size: 20px;
 			font-weight: bold;
+		}
+
+		&__exit {
+			font-size: 20px;
+			font-weight: 400;
+			color: $white-text;
+			text-decoration: none;
 		}
 	}
 }

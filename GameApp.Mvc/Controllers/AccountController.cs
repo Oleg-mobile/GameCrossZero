@@ -49,9 +49,6 @@ namespace GameApp.Mvc.Controllers
 
             Response.Cookies.Append("token", token.Token, new CookieOptions
             {
-                //HttpOnly = true,
-                //Secure = true,
-                //SameSite = SameSiteMode.None,
                 Expires = token.Expires
             });
 
@@ -89,9 +86,6 @@ namespace GameApp.Mvc.Controllers
 
             Response.Cookies.Append("token", token.Token, new CookieOptions
             {
-                //HttpOnly = true,
-                //Secure = true,
-                //SameSite = SameSiteMode.None,
                 Expires = token.Expires
             });
 

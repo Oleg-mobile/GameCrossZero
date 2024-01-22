@@ -31,4 +31,17 @@
 		margin-left: 40px;
 		margin-right: 40px;
 	}
+
+	&__ready {
+		margin-top: 15px;
+		width: 50px;
+	}
+
+	#opponentready {
+		//visibility: hidden;
+	}
+
+	#playerready {
+		//visibility: hidden;
+	}
 }
