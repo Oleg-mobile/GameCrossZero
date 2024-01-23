@@ -36,9 +36,9 @@ class UsersService {
             });
     }
 
-    async changeReady(userId) {
+    async changeReady() {
         await axios
-            .post(this.url + '/ChangeReady', userId)
+            .post(this.url + '/ChangeReady')
             .then(function (response) { })
             .catch(function (error) {
                 console.log(error);

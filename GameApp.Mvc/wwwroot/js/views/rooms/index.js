@@ -113,8 +113,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 		});
 
 	document
-		.querySelector('.rooms__name')
+		.querySelector('.room__readybtn')
 		.addEventListener('click', async () => {
-			usersService.changeReady();
+			let isReady = usersService.changeReady();
+
 		});
 });
