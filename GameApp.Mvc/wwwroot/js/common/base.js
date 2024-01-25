@@ -2,7 +2,6 @@
 import APP_CONSTS from '../common/appConsts.js';
 
 const token = Cookies.get("token");
-console.log(Cookies.get());
 if (token) {
     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 }
@@ -21,3 +20,13 @@ const initUserProfile = async () => {
 };
 
 initUserProfile();
+
+document.querySelector('#exitbtn')
+    .addEventListener('click', async () => {
+
+        history.pushState(null, document.title, location.href);
+        window.addEventListener('popstate', function (event) {
+            history.pushState(null, document.title, location.href);
+        });
+
+    });
