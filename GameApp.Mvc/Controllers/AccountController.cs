@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace GameApp.Mvc.Controllers
 {
+    //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class AccountController : Controller
     {
         private readonly GameAppHttpClient _httpClient;

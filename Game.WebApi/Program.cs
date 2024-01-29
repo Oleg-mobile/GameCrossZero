@@ -1,5 +1,6 @@
 using FluentValidation;
 using GameApp.Domain;
+using GameApp.WebApi.Hubs;
 using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Users;
@@ -45,6 +46,8 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 });
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<GameContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddAutoMapper(typeof(Program));
@@ -96,5 +99,7 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot/avatars")),
     RequestPath = "/avatars"
 });
+
+app.MapHub<GameHub>("/gameHub");
 
 app.Run();
