@@ -67,6 +67,9 @@ namespace GameApp.WebApi.Services.Rooms
         {
             try
             {
+                var isExist = await Context.Users.AnyAsync(u => u.CurrentRoomId == input.RoomId && u.Id == userId);
+                if (isExist) return;
+
                 _enterRoomValidator.ValidateAndThrow(input);
             }
             catch (ValidationException ex)
