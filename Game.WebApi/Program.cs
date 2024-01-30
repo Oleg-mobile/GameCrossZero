@@ -1,5 +1,6 @@
 using FluentValidation;
 using GameApp.Domain;
+using GameApp.WebApi.Extensions;
 using GameApp.WebApi.Hubs;
 using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Rooms;
@@ -52,9 +53,7 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContext<GameContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
-builder.Services.AddTransient<IRoomService, RoomService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IGameService, GameService>();
+builder.Services.AddServices();
 builder.Services.AddCors();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
