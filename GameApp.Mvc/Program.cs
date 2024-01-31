@@ -33,12 +33,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseAuthentication();  // аутентификация по cookies
 app.UseAuthorization();
+
+app.UseStaticFiles();
 
 app.UseMiddleware<UnauthorizedMiddleware>();
 
