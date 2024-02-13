@@ -1,24 +1,49 @@
 ﻿
-<div class="game">
+<div
+    id="gameModal"
+	class="modal"
+	tabindex="-1"
+>
+	<div class="modal-dialog modal-fullscreen">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="game">Игра </h5>
+			</div>
+			<div class="modal-body">
 
-<table class="field">
-    <tr>
-        <td class="cell"></td>
-        <td class="cell"></td>
-        <td class="cell"></td>
-    </tr>
-    <tr>
-        <td class="cell"></td>
-        <td class="cell"></td>
-        <td class="cell"></td>
-    </tr>
-    <tr>
-        <td class="cell"></td>
-        <td class="cell"></td>
-        <td class="cell"></td>
-    </tr>
-</table>
+                <div class="game">
 
+                    <table class="field">
+                        <tr>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                        </tr>
+                        <tr>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                        </tr>
+                        <tr>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                            <td class="cell"></td>
+                        </tr>
+                    </table>
+
+                </div>
+
+			</div>
+		</div>
+	</div>
 </div>
+
+@section Scripts {
+    <script
+        src="~/js/views/games/index.js"
+        asp-append-version="true"
+        type="module"
+    ></script>
+}
 
 
