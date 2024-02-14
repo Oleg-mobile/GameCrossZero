@@ -37,9 +37,11 @@ class UsersService {
     }
 
     async changeReady() {
-        await axios
+        return await axios
             .post(this.url + '/ChangeReady')
-            .then(function (response) { })
+            .then(function (response) {
+                return response.data;
+            })
             .catch(function (error) {
                 console.log(error);
             })

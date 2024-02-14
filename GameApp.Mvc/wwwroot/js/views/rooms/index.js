@@ -115,7 +115,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 	document
 		.querySelector('.room__readybtn')
 		.addEventListener('click', async () => {
-			let isReady = usersService.changeReady();
-
+			let isReady = await usersService.changeReady();
+			console.log(isReady);
+			if (isReady) {
+				document.getElementById("playerready").classList.remove("d-none");
+				document.querySelector('.room__readybtn').textContent = "Не готов";
+			} else {
+				document.getElementById("playerready").classList.add("d-none");
+				document.querySelector('.room__readybtn').textContent = "Готов";
+			}
 		});
+
+	// SirnalR
+	let connection = new signalR.HubConnectionBuilder()
+		.withUrl(APP_CONSTS.SERVER_URL + 'gameHub', {
+			withCredentials: false,
+			accessTokenFactory: () => {
+				return Cookies.get("token");
+			},
+		})
+		.configureLogging(signalR.LogLevel.Information)
+		.build();
+
+	connection
+		.start()
+		.then(function () {
+			console.log('connection Started...');
+		})
+		.catch(function (err) {
+			return console.error(err);
+		});
+
+	connection.on('ChangeReady', function (isReady) {
+		console.log('ChangeReady ' + isReady);
+	});
 });
