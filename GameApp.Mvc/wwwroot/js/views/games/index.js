@@ -17,8 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (element.tagName === 'TD') {
             if (element.style.backgroundImage.indexOf(cross.src) >= 0) {
                 element.style.backgroundImage = "url(" + zero.src + ")";
-            }
-            else {
+            } else {
                 //element.innerHTML = "<img src='" + cross.src + "' alt='figure'/>";
                 element.style.backgroundImage = "url(" + cross.src + ")";
             }

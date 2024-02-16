@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GameApp.Domain;
 using GameApp.WebApi.Hubs;
+using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Users;
 using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +14,17 @@ namespace GameApp.WebApi.Controllers
     public class UsersController : GameAppController
     {
         private readonly IUserService _userService;
+        private readonly IRoomService _roomService;
         private readonly IHubContext<GameHub> _gameHub;
 
-		public UsersController(GameContext context, IMapper mapper, IUserService userService, IHubContext<GameHub> hubContext) : base(context, mapper)
-		{
-			_userService = userService;
-			_gameHub = hubContext;
-		}
+        public UsersController(GameContext context, IMapper mapper, IUserService userService, IHubContext<GameHub> hubContext, IRoomService roomService) : base(context, mapper)
+        {
+            _userService = userService;
+            _gameHub = hubContext;
+            _roomService = roomService;
+        }
 
-		[HttpGet("[action]")]
+        [HttpGet("[action]")]
 		[ProducesResponseType(typeof(UserShortDto), StatusCodes.Status200OK)]
 		public async Task<IActionResult> GetAvatarAsync()
 		{
@@ -55,9 +58,15 @@ namespace GameApp.WebApi.Controllers
             {
 				var userId = await _userService.GetId(User.Identity!.Name!);
                 var isReady = await _userService.ChangeReady(userId);
-				await _gameHub.Clients
-                    .Client(GameHub._connectionUsers[User.Identity!.Name!])
-                    .SendAsync("ChangeReady", isReady);
+                var currentRoom = await _roomService.GetCurrentRoom(userId);
+
+                if (currentRoom.Opponent is not null)
+                {
+                    await _gameHub.Clients
+                        .Client(GameHub._connectionUsers[currentRoom.Opponent.Login])
+                        .SendAsync("ChangeReady", isReady);
+                }
+
 				return Ok(isReady);
             }
             catch (Exception ex)

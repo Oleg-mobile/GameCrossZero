@@ -22,7 +22,8 @@ main {
 }
 
 // Components
-@import './components/header', './components/btn', './components/input', './components/modal', './components/roomModal', './components/circle';
+@import './components/header', './components/btn', './components/input', './components/modal', 
+		'./components/roomModal', './components/circle';
 
 // Views
 @import './views/rooms', './views/account', './views/games';

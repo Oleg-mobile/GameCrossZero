@@ -35,6 +35,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 			}
 		}
 
+		if (currentRoom.player.isReadyToPlay) {
+			document.getElementById("playerready").classList.remove("d-none");
+			document.querySelector('.room__readybtn').textContent = "Не готов";
+		} else {
+			document.getElementById("playerready").classList.add("d-none");
+			document.querySelector('.room__readybtn').textContent = "Готов";
+		}
+
+		if (currentRoom.opponent != null && currentRoom.opponent.isReadyToPlay) {
+			document.getElementById("opponentready").classList.remove("d-none");
+		} else {
+			document.getElementById("opponentready").classList.add("d-none");
+		}
+
 		roomModal.show();
 	};
 
@@ -116,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		.querySelector('.room__readybtn')
 		.addEventListener('click', async () => {
 			let isReady = await usersService.changeReady();
-			console.log(isReady);
+
 			if (isReady) {
 				document.getElementById("playerready").classList.remove("d-none");
 				document.querySelector('.room__readybtn').textContent = "Не готов";
@@ -148,5 +162,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	connection.on('ChangeReady', function (isReady) {
 		console.log('ChangeReady ' + isReady);
+
+		if (isReady) {
+			document.getElementById("opponentready").classList.remove("d-none");
+		} else {
+			document.getElementById("opponentready").classList.add("d-none");
+		}
 	});
 });
