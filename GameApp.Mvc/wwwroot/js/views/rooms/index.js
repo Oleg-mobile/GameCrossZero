@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			currentRoom.roomName;
 
 		document.querySelector('#playerNickname').textContent =
-			currentRoom.player.nickname;
+			currentRoom.player.login;
 		if (currentRoom.player.avatar) {
 			document.querySelector(
 				'#player img'
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		if (currentRoom.opponent) {
 			document.querySelector('#opponentNickname').textContent =
-				currentRoom.opponent.nickname;
+				currentRoom.opponent.login;
 			if (currentRoom.opponent.avatar) {
 				document.querySelector(
 					'#opponent img'
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 							src="/img/lobby.ico"
 							alt="room logo"
 						/>
-						${room.name}
+						<span id="roomsname">${room.name}</span>
 					</div>
 					<div class="rooms__info">
 						${
@@ -90,6 +90,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 	};
 
 	await initRooms();
+
+	document
+		.querySelector('.rooms__name')
+		.addEventListener('click', async () => {
+
+			let roomsName = document.getElementById('roomsname').innerHTML;
+
+			//await roomsService.enter(dto);
+			//roomModal.show();
+
+		});
 
 	const roomNameInput = document.querySelector('#roomName');
 	const roomPasswordInput = document.querySelector('#roomPassword');
