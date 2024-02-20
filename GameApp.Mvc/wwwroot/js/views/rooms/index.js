@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 				'beforeend',
 				`
 				<div class="rooms__item">
-					<div class="rooms__name">
+					<div class="rooms__name"
+					     id="rooms__name">
 						<img
 							class="rooms__img"
 							src="/img/lobby.ico"
@@ -92,14 +93,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 					</div>
 				</div>`
 			);
+
+			document
+				.getElementById('rooms__name')
+				.addEventListener('click', enterToRoom);
+
 		});
 	};
 
 	await initRooms();
 
-	const enterToRoom = document
-		.querySelector('.rooms__name')
-		.addEventListener('click', async () => {
+	async function enterToRoom() {
 
 			const roomsName = document.getElementById('roomsname').innerHTML;
 
@@ -116,9 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 			await roomsService.enter(dto);
 			await redirectToRoom();
-		});
+		};
 
-	await enterToRoom();
+	//await enterToRoom();
 
 	document
 		.querySelector('.room__playbtn')
