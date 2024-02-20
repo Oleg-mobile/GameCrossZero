@@ -72,7 +72,6 @@ class RoomsService {
                 console.log(error);
             });
     }
-
 }
 
 export default new RoomsService();

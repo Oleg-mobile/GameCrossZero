@@ -30,7 +30,6 @@
 		display: flex;
 		align-items: center;
 		color: $name-text;
-		cursor: pointer;
 	}
 
 	&__enterbtn {
@@ -46,6 +45,7 @@
 	&__img {
 		max-width: 70px;
 		margin-right: 30px;
+		cursor: pointer;
 	}
 
 	&__protection {

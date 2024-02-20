@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     gameModal.show();
 
     var cross = new Image();
-    cross.src = "/img/cross.ico";
-
     var zero = new Image();
+
+    cross.src = "/img/cross.ico"; 
     zero.src = "/img/zero.ico";
 
     document.querySelector('table').onclick = function (e) {
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (element.style.backgroundImage.indexOf(cross.src) >= 0) {
                 element.style.backgroundImage = "url(" + zero.src + ")";
             } else {
-                //element.innerHTML = "<img src='" + cross.src + "' alt='figure'/>";
                 element.style.backgroundImage = "url(" + cross.src + ")";
             }
         }
