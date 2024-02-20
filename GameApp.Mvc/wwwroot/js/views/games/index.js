@@ -1,5 +1,4 @@
 ﻿
-
 document.addEventListener('DOMContentLoaded', async () => {
 
     const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));

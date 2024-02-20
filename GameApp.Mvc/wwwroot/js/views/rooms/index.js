@@ -1,5 +1,6 @@
 ﻿import roomsService from '../../Api/roomsService.js';
 import usersService from '../../Api/usersService.js';
+import gamesService from '../../Api/gamesService.js';
 import APP_CONSTS from '../../common/appConsts.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -54,12 +55,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	await redirectToRoom();
 
+	var roomsMap = new Map();
+
 	const initRooms = async () => {
 		const roomsContainer = document.querySelector('.rooms__items');
 		roomsContainer.textContent = '';
 
 		const rooms = await roomsService.getAll();
 		rooms.forEach((room) => {
+
+			roomsMap.set(room.name, room.id);
+
 			roomsContainer.insertAdjacentHTML(
 				'beforeend',
 				`
@@ -91,16 +97,45 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	await initRooms();
 
-	document
+	const enterToRoom = document
 		.querySelector('.rooms__name')
 		.addEventListener('click', async () => {
 
-			let roomsName = document.getElementById('roomsname').innerHTML;
+			const roomsName = document.getElementById('roomsname').innerHTML;
 
-			//await roomsService.enter(dto);
-			//roomModal.show();
+			if (!roomsMap.has(roomsName)) {
+				return;
+			}
 
+			const roomId = roomsMap.get(roomsName);
+
+			const dto = {
+				roomId: roomId,
+				password: null
+			}
+
+			await roomsService.enter(dto);
+			await redirectToRoom();
 		});
+
+	await enterToRoom();
+
+	document
+		.querySelector('.room__playbtn')
+		.addEventListener('click', async () => {
+
+			const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));  // ?
+			const currentRoom = await roomsService.getCurrentRoom();
+			if (!currentRoom) {
+				return;
+			}
+
+			let roomId = currentRoom.player.currentRoomId;
+
+			await gamesService.start(roomId);
+			gameModal.show();
+		});
+
 
 	const roomNameInput = document.querySelector('#roomName');
 	const roomPasswordInput = document.querySelector('#roomPassword');
