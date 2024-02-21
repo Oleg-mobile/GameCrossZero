@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 	var roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
 	var playerReadyIcon = document.getElementById("playerready");
 	var readyToPlayBtn = document.querySelector('.room__readybtn');
-	var opponentReadyIcon = document.getElementById("opponentready")
-	var roomsMap = new Map();
+	var opponentReadyIcon = document.getElementById("opponentready");
+	var opponentNickname = document.querySelector('#opponentNickname');
+	//var roomsMap = new Map();
 
 	const redirectToRoom = async () => {
 		const currentRoom = await roomsService.getCurrentRoom();
@@ -26,8 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 
 		if (currentRoom.opponent) {
-			document.querySelector('#opponentNickname').textContent =
-				currentRoom.opponent.login;
+			opponentNickname.textContent = currentRoom.opponent.login;
 			if (currentRoom.opponent.avatar) {
 				document.querySelector('#opponent img').src =
 					`${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 				</div>`
 			);
 
-			roomsMap.set(room.name, room.id);
+			//roomsMap.set(room.name, room.id);
 		});
 
 		addEventForElement();
@@ -101,13 +101,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	const enterToRoom = async (e) => {
 
-		const roomsName = document.getElementById('roomsname').innerHTML;
+		//const roomsName = document.getElementById('roomsname').innerHTML;
+		//		if (!roomsMap.has(roomsName))
+		//	return;
+		//const roomsId = roomsMap.get(roomsName);
 
-		if (!roomsMap.has(roomsName))
-			return;
-
-		const roomsId = roomsMap.get(roomsName);
-		const roomsId1 = e.target.dataset.id;  // Или так
+		const roomsId = e.target.dataset.id;
 		const dto = {
 			roomId: roomsId,
 			password: null  // Заглушка
@@ -124,6 +123,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 		.addEventListener('click', async () => {
 			const currentRoom = await roomsService.getCurrentRoom();  // Использовать глобальную?
 			if (!currentRoom)
+				return;
+
+			if (!currentRoom.player.isReadyToPlay && !currentRoom.opponent.isReadyToPlay)
 				return;
 
 			const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));  // ?
@@ -206,6 +208,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		if (isReady) {
 			opponentReadyIcon.classList.remove("d-none");
+
+			//opponentNickname.textContent = currentRoom.opponent.login;
+			//if (currentRoom.opponent.avatar) {
+			//	document.querySelector('#opponent img').src =
+			//		`${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
+			//}
+			
 		} else {
 			opponentReadyIcon.classList.add("d-none");
 		}

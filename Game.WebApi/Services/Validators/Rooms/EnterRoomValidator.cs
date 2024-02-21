@@ -17,7 +17,7 @@ namespace GameApp.WebApi.Services.Validators.Rooms
         private static bool CheckUsersCountInRoom(GameContext context, int roomId)
         {
             var countPlayersInRoom = context.Users.Count(u => u.CurrentRoomId == roomId);
-            return countPlayersInRoom <= Constants.maxNumberOfPlayers;
+            return countPlayersInRoom < Constants.maxNumberOfPlayers;
         }
 
         private static bool CheckPassword(GameContext context, EnterRoomDto input)
