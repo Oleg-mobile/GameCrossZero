@@ -10,20 +10,15 @@ namespace GameApp.WebApi.Services.Rooms
 {
 	public class RoomService : GameAppService, IRoomService
 	{
-		private readonly IValidator<ExitRoomDto> _exitRoomValidator;
-		private readonly IValidator<EnterRoomDto> _enterRoomValidator;
-
-		public RoomService(GameContext context, IMapper mapper, IValidator<ExitRoomDto> exitRoomValidator, IValidator<EnterRoomDto> enterRoomValidator) : base(context, mapper)
+		public RoomService(GameContext context, IMapper mapper) : base(context, mapper)
 		{
-			_exitRoomValidator = exitRoomValidator;
-			_enterRoomValidator = enterRoomValidator;
 		}
 
 		public async Task Create(CreateRoomDto input, int managerId)
 		{
-			var isExist = Context.Rooms.Any(r => r.Name == input.Name);
+			var isRoomExist = Context.Rooms.Any(r => r.Name == input.Name);
 
-			if (isExist)
+			if (isRoomExist)
 			{
 				throw new Exception($"Комната с названием {input.Name} уже существует");
 			}
@@ -33,22 +28,15 @@ namespace GameApp.WebApi.Services.Rooms
 
 			await Context.Rooms.AddAsync(room);
 			await Context.SaveChangesAsync();
-
-			var enterRoomDto = Mapper.Map<EnterRoomDto>(input);
-			enterRoomDto.RoomId = room.Id;
-			await Enter(enterRoomDto, managerId);
+			await Enter(room.Id, input.Password, managerId);
 		}
 
-		public async Task Delete(int id)
+		public async Task Delete(int userId)
 		{
-			var room = await Context.Rooms.FindAsync(id);
-
-			if (room is null)
-			{
-				throw new Exception($"Комната с Id = {id} не существует");
-			}
-
-			var users = Context.Users.Where(u => u.CurrentRoomId == id);
+			var user = await Context.Users.FindAsync(userId);
+			var roomId = user?.CurrentRoomId;
+			var room = await Context.Rooms.FindAsync(roomId) ?? throw new Exception($"Комната с Id = {roomId} не существует");
+			var users = Context.Users.Where(u => u.CurrentRoomId == roomId);
 			if (users is not null)
 			{
 				foreach (var u in users)
@@ -62,59 +50,47 @@ namespace GameApp.WebApi.Services.Rooms
 			await Context.SaveChangesAsync();
 		}
 
-		public async Task Enter(EnterRoomDto input, int userId)
+		public async Task Enter(int roomId, string password, int userId)
 		{
-			try
+			var isExist = await Context.Users.AnyAsync(u => u.CurrentRoomId == roomId && u.Id == userId);
+			if (isExist)
 			{
-				var isExist = await Context.Users.AnyAsync(u => u.CurrentRoomId == input.RoomId && u.Id == userId);
-				if (isExist)
-				{
-					return;
-				}
-
-				_enterRoomValidator.ValidateAndThrow(input);
+				throw new Exception($"Пользователь с Id={userId} уже находится в комнате с Id={roomId}");
 			}
-			catch (ValidationException ex)
+
+			var isPassswordCorrect = await Context.Rooms.AnyAsync(r => r.Password == password && r.Id == roomId);
+			if (!isPassswordCorrect)
 			{
-				var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
-				throw new Exception(message);
+				throw new Exception($"Не верный пароль");
 			}
 
 			var user = await Context.Users.FindAsync(userId);
-			user.CurrentRoomId = input.RoomId;
+			user.CurrentRoomId = roomId;
 			Context.Users.Update(user);
 			await Context.SaveChangesAsync();
 		}
 
-		public async Task Exit(ExitRoomDto input)
+		public async Task Exit(int userId)
 		{
-			try
-			{
-				_exitRoomValidator.ValidateAndThrow(input);
-			}
-			catch (ValidationException ex)
-			{
-				var message = ex.Errors?.First().ErrorMessage ?? ex.Message;
-				throw new Exception(message);
-			}
-
-			var usersCount = Context.Users.Count(u => u.CurrentRoomId == input.RoomId);
+			var currentRoomId = await Context.Users.Where(u => u.Id == userId).Select(u => u.CurrentRoomId).FirstAsync() ?? 
+				throw new Exception("Пользователь не находится в комнате");
+			var usersCount = Context.Users.Count(u => u.CurrentRoomId == currentRoomId);
 			if (usersCount == 1)
 			{
-				await Delete(input.RoomId);
+				await Delete(userId);
 			}
 			else
 			{
-				var room = await Context.Rooms.FindAsync(input.RoomId);
-				if (room.ManagerId == input.UserId)
+				var room = await Context.Rooms.FindAsync(currentRoomId);
+				if (room.ManagerId == userId)
 				{
-					var newRoomManager = await Context.Users.FirstAsync(u => u.CurrentRoomId == input.RoomId && u.Id != input.UserId);
+					var newRoomManager = await Context.Users.FirstAsync(u => u.CurrentRoomId == currentRoomId && u.Id != userId);
 					room.ManagerId = newRoomManager.Id;
 					Context.Rooms.Update(room);
 				}
 			}
 
-			var user = await Context.Users.FindAsync(input.UserId);
+			var user = await Context.Users.FindAsync(userId);
 			user.CurrentRoomId = null;
 			user.IsReadyToPlay = false;
 			Context.Users.Update(user);
@@ -136,10 +112,10 @@ namespace GameApp.WebApi.Services.Rooms
 			}).ToListAsync());
 		}
 
-		public async Task<CurrentRoomDto> GetCurrentRoom(int playerId)
+		public async Task<CurrentRoomDto> GetCurrentRoom(int userId)
 		{
 
-			var player = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == playerId);
+			var player = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == userId);
 
 			if (player.CurrentRoom is null)
 			{
@@ -150,11 +126,12 @@ namespace GameApp.WebApi.Services.Rooms
 
 			return new CurrentRoomDto
 			{
-				IsGameStarted = player.CurrentRoom.CurrentGameId != null,
-				IsPlayerRoomManager = player.CurrentRoom.ManagerId == playerId,
+				IsGameStarted = player.CurrentRoom.Id != null,                     // TODO ???
+				IsPlayerRoomManager = player.CurrentRoom.ManagerId == userId,
 				Player = Mapper.Map<UserDto>(player),
 				Opponent = Mapper.Map<UserDto>(opponent),
-				RoomName = player.CurrentRoom.Name
+				RoomName = player.CurrentRoom.Name,
+				Id = player.CurrentRoom.Id
 			};
 		}
 	}

@@ -4,6 +4,7 @@ namespace GameApp.WebApi.Services.Rooms.Dto
 {
     public class CurrentRoomDto
     {
+        public int Id { get; set; }
         public bool IsPlayerRoomManager { get; set; }
         public bool IsGameStarted { get; set; }
         public UserDto Opponent { get; set; }

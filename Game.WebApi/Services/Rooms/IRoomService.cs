@@ -6,9 +6,9 @@ namespace GameApp.WebApi.Services.Rooms
     {
         Task Create(CreateRoomDto input, int managerId);
         Task<IEnumerable<RoomDto>> GetAll();
-        Task Enter(EnterRoomDto input, int userId);
-        Task Exit(ExitRoomDto input);
-        Task Delete(int id);
-        Task<CurrentRoomDto> GetCurrentRoom(int playerId);
+        Task Enter(int roomId, string password, int userId);
+        Task Exit(int userId);
+        Task Delete(int userId);
+        Task<CurrentRoomDto> GetCurrentRoom(int userId);
     }
 }

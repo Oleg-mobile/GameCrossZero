@@ -6,9 +6,10 @@ namespace GameApp.Mvc.Controllers
     [Authorize]
     public class GamesController : Controller
     {
-        public IActionResult Index()
+        [Route("[controller]/{roomId:int}")]
+        public IActionResult Index(int roomId)  // TODO красивые ссылки
         {
-            return View();
+            return View(roomId);
         }
     }
 }

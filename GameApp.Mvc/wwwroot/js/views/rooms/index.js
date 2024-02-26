@@ -1,22 +1,26 @@
 ﻿import roomsService from '../../Api/roomsService.js';
 import usersService from '../../Api/usersService.js';
-import gamesService from '../../Api/gamesService.js';
 import APP_CONSTS from '../../common/appConsts.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-	var modalForCreateRoom = new bootstrap.Modal(document.getElementById('createModal'));
-	var roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
-	var playerReadyIcon = document.getElementById("playerready");
-	var readyToPlayBtn = document.querySelector('.room__readybtn');
-	var opponentReadyIcon = document.getElementById("opponentready");
-	var opponentNickname = document.querySelector('#opponentNickname');
-	//var roomsMap = new Map();
+	const modalForCreateRoom = new bootstrap.Modal(document.getElementById('createModal'));
+	const roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
+	const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+	const playerReadyIcon = document.getElementById("playerready");
+	const readyToPlayBtn = document.querySelector('.room__readybtn');
+	const opponentReadyIcon = document.getElementById("opponentready");
+	const opponentNickname = document.querySelector('#opponentNickname');
+	const playbtn = document.querySelector('.room__playbtn');
+	let currentRoomId;
+	let roomsPassword = null;
 
 	const redirectToRoom = async () => {
 		const currentRoom = await roomsService.getCurrentRoom();
 		if (!currentRoom)
 			return;
+
+		currentRoomId = currentRoom.id;
 
 		document.querySelector('#currentRoomName').innerText = currentRoom.roomName;
 		document.querySelector('#playerNickname').textContent = currentRoom.player.login;
@@ -48,6 +52,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 			opponentReadyIcon.classList.add("d-none");
 		}
 
+		if (currentRoom.player.isReadyToPlay && currentRoom.opponent.isReadyToPlay) {
+			playbtn.classList.remove("d-none");
+		} else {
+			playbtn.classList.add("d-none");
+		}
+
 		roomModal.show();
 	};
 
@@ -62,10 +72,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 			roomContainer.insertAdjacentHTML(
 				'beforeend',
 				`
-				<div class="rooms__item">
+				<div class="rooms__item ${room.countPlayersInRoom >= APP_CONSTS.MAX_NUMBER_OF_PLAYERS ? 'disabled' : ''}">
 					<div class="rooms__name">
 						<img
 							data-id="${room.id}"
+							data-isProtected="${room.isProtected}"
 							class="rooms__img"
 							src="/img/lobby.ico"
 							alt="room logo"
@@ -86,53 +97,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 					</div>
 				</div>`
 			);
-
-			//roomsMap.set(room.name, room.id);
 		});
 
-		addEventForElement();
-	};
-
-	const addEventForElement = () => {
 		document
-			.querySelectorAll('.rooms__img')
+			.querySelectorAll('.rooms__item')
 			.forEach((e) => e.addEventListener('click', enterToRoom));
+
+		document
+			.querySelector('#passwordBtn')
+			.addEventListener('click', setRoomsPassword);
 	};
 
 	const enterToRoom = async (e) => {
-
-		//const roomsName = document.getElementById('roomsname').innerHTML;
-		//		if (!roomsMap.has(roomsName))
-		//	return;
-		//const roomsId = roomsMap.get(roomsName);
-
 		const roomsId = e.target.dataset.id;
-		const dto = {
-			roomId: roomsId,
-			password: null  // Заглушка
+		const isProtected = e.target.dataset.isprotected;
+
+		if (isProtected) {
+			//passwordModal.show();
 		}
 
-		await roomsService.enter(dto);
+		await roomsService.enter(roomsId, roomsPassword);
 		await redirectToRoom();
 	};
 
+	const setRoomsPassword = async () => {   // Не работает
+		const secretRoomPasswordInput = document.querySelector('#secretRoomPasswordInput');
+		roomsPassword = secretRoomPasswordInput.value;
+		passwordModal.hide();
+	}
+
 	await initRooms();
 
-	document
-		.querySelector('.room__playbtn')
-		.addEventListener('click', async () => {
-			const currentRoom = await roomsService.getCurrentRoom();  // Использовать глобальную?
-			if (!currentRoom)
-				return;
-
-			if (!currentRoom.player.isReadyToPlay && !currentRoom.opponent.isReadyToPlay)
-				return;
-
-			const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));  // ?
-			let roomId = currentRoom.player.currentRoomId;
-
-			await gamesService.start(roomId);
-			gameModal.show();
+	playbtn.addEventListener('click', async () => {
+			location.href = "games/" + currentRoomId;
 		});
 
 
@@ -156,16 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	document
 		.querySelector('#exitRoomBtn')
 		.addEventListener('click', async () => {
-			const currentRoom = await roomsService.getCurrentRoom();  // Использовать глобальную?
-			if (!currentRoom)
-				return;
-
-			const dto = {
-				roomId: currentRoom.player.currentRoomId,
-				userId: currentRoom.player.id,
-			};
-
-			await roomsService.exit(dto);
+			await roomsService.exit();
 			roomModal.hide();
 			await initRooms();
 		});
@@ -206,17 +194,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 	connection.on('ChangeReady', function (isReady) {
 		console.log('ChangeReady ' + isReady);
 
-		if (isReady) {
+		if (isReady) {     // Не срабатывает?
 			opponentReadyIcon.classList.remove("d-none");
 
-			//opponentNickname.textContent = currentRoom.opponent.login;
-			//if (currentRoom.opponent.avatar) {
-			//	document.querySelector('#opponent img').src =
-			//		`${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
-			//}
-			
+			if (currentRoom.player.isReadyToPlay)
+				playbtn.classList.remove("d-none");
+
 		} else {
 			opponentReadyIcon.classList.add("d-none");
+			playbtn.classList.add("d-none");
+		}
+	});
+
+	connection.on('PlayerEntered', function (playerData) {
+		console.log('PlayerEntered ' + playerData.login + ' ' + playerData.avatar);
+
+		if (currentRoom.opponent) {
+			opponentNickname.textContent = playerData.login;
+			if (currentRoom.opponent.avatar) {
+				document.querySelector('#opponent img').src =
+					`${APP_CONSTS.SERVER_URL}avatars/${playerData.avatar}`;
+
+			}
+		}
+	});
+
+	connection.on('PlayerIsOut', function (playerData) {
+		console.log('PlayerIsOut ' + playerData.login + ' ' + playerData.avatar);
+
+		if (currentRoom.opponent) {
+			opponentNickname.textContent = playerData.login;
+			document.querySelector('#opponent img').src = playerData.avatar;
 		}
 	});
 });

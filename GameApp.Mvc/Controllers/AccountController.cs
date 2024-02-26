@@ -17,7 +17,7 @@ namespace GameApp.Mvc.Controllers
             _httpClient = httpClient;
         }
 
-        public IActionResult Login()  // TODO нужен?
+		public IActionResult Login()
         {
             return View();
         }
@@ -56,7 +56,7 @@ namespace GameApp.Mvc.Controllers
             return RedirectToAction("Index", "Rooms");
         }
 
-        public IActionResult Register()
+		public IActionResult Register()
         {
             return View();
         }

@@ -20,6 +20,12 @@
 		color: $white-text;
 		padding: 10px 40px 10px 10px;
 		font-size: 20px;
+		cursor: pointer;
+
+		&.disabled {
+			pointer-events: none;
+			background: lighten($background, 20%);
+		}
 
 		& + & {
 			margin-top: 20px;
@@ -45,7 +51,6 @@
 	&__img {
 		max-width: 70px;
 		margin-right: 30px;
-		cursor: pointer;
 	}
 
 	&__protection {

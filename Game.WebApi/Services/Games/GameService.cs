@@ -3,6 +3,7 @@ using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Games.Dto;
+using System.Reflection;
 
 namespace GameApp.WebApi.Services.Games
 {
@@ -80,5 +81,17 @@ namespace GameApp.WebApi.Services.Games
 
             Context.SaveChanges();
         }
-    }
+
+        public async Task<InfoGameDto> GetInfoAsync(int roomId)
+        {
+
+            return new InfoGameDto
+            {
+                WinnerId = 1,
+                Winner = null,
+                WhoseMoveId = 2,
+                WhoseMove = null
+            };
+        }
+	}
 }

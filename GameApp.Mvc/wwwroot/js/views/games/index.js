@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     gameModal.show();
 
-    var cross = new Image();
-    var zero = new Image();
+    let cross = new Image();
+    let zero = new Image();
 
     cross.src = "/img/cross.ico"; 
     zero.src = "/img/zero.ico";
@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
+
+    const roomId = dataset.room-id;
+
+    const gameInfo = await gamesService.gameInfo(roomId);
+    document.querySelector('#whoseMove').textContent = gameInfo.WhoseMoveId;
+
 });
 
 

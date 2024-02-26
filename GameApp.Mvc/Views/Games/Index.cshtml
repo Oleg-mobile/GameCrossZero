@@ -1,13 +1,16 @@
-﻿
+﻿@model int
+
 <div
     id="gameModal"
 	class="modal"
 	tabindex="-1"
+    data-room-id="@Model"
 >
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="game">Игра </h5>
+                <h5>Ход игрока: <span id="whoseMove"></span> </h5>
 			</div>
 			<div class="modal-body">
 

@@ -26,35 +26,36 @@ class RoomsService {
             });
     }
 
-    async enter(room) {
+    async enter(roomsId, password) {
         await axios
-            .post(this.url + '/Enter', room)
-            .then(function (response) { })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-            });
-    }
-
-    async exit(room) {
-        await axios
-            .post(this.url + '/Exit', room)
-            .then(function (response) { })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-            });
-    }
-
-    async delete(id) {
-        await axios
-            .delete(this.url + '/Delete', {
+            .post(this.url + '/Enter', {
                 params: {
-                    id,
-                },
+                    roomId: roomsId,
+                    password: password
+                }
             })
+            .then(function (response) { })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+            });
+    }
+
+    async exit() {
+        await axios
+            .post(this.url + '/Exit')
+            .then(function (response) { })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+            });
+    }
+
+    async delete() {
+        await axios
+            .delete(this.url + '/Delete')
             .then(function (response) { })
             .catch(function (error) {
                 console.log(error);

@@ -16,6 +16,19 @@ class GamesService {
             });
     }
 
+    async getInfo(roomId) {
+        return await axios.get(this.url + '/GetInfo', {
+            params: {
+                roomId
+            }
+        })
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 }
 
 export default new GamesService();
