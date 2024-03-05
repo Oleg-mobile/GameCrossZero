@@ -47,12 +47,12 @@ namespace GameApp.WebApi.Controllers
 		}
 
 		[HttpPost("[action]")]
-		public async Task<IActionResult> Enter(int roomId, string password)
+		public async Task<IActionResult> Enter(EnterRoomDto input)
 		{
 			try
 			{
 				var playerId = await _userService.GetId(User.Identity!.Name!);
-				await _roomService.Enter(roomId, password, playerId);
+				await _roomService.Enter(input.RoomId, input.Password, playerId);
 				var currentRoom = await _roomService.GetCurrentRoom(playerId);
 
 				if (currentRoom.Opponent is not null)

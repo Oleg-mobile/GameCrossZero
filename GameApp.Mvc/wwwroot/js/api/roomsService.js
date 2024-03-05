@@ -26,13 +26,11 @@ class RoomsService {
             });
     }
 
-    async enter(roomsId, password) {
+    async enter(roomId, password) {
         await axios
             .post(this.url + '/Enter', {
-                params: {
-                    roomId: roomsId,
-                    password: password
-                }
+                    roomId,
+                    password
             })
             .then(function (response) { })
             .catch(function (error) {

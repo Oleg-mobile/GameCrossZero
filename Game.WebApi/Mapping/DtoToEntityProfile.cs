@@ -10,10 +10,11 @@ namespace GameApp.WebApi.Mapping
     {
         public DtoToEntityProfile()
         {
-            CreateMap<CreateUserDto, User>().ReverseMap();
+            CreateMap<CreateUserDto, User>();
 			CreateMap<User, UserDto>();
-            CreateMap<CreateRoomDto, Room>().ReverseMap();
-            CreateMap<CreateGameDto, Game>().ReverseMap();
+            CreateMap<CreateRoomDto, Room>().ForMember(dest => dest.Password, opt => opt.MapFrom(src =>
+			    string.IsNullOrWhiteSpace(src.Password) ? null : src.Password.Trim()));
+            CreateMap<CreateGameDto, Game>();
 			CreateMap<InfoGameDto, Game>().ReverseMap();
 			CreateMap<RoomDto, Room>();
         }

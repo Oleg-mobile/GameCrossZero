@@ -72,16 +72,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 			roomContainer.insertAdjacentHTML(
 				'beforeend',
 				`
-				<div class="rooms__item ${room.countPlayersInRoom >= APP_CONSTS.MAX_NUMBER_OF_PLAYERS ? 'disabled' : ''}">
+				<div class="rooms__item ${room.countPlayersInRoom >= APP_CONSTS.MAX_NUMBER_OF_PLAYERS ? 'disabled' : ''}"
+						data-id="${room.id}" data-is-protected="${room.isProtected}">
 					<div class="rooms__name">
 						<img
-							data-id="${room.id}"
-							data-isProtected="${room.isProtected}"
 							class="rooms__img"
 							src="/img/lobby.ico"
 							alt="room logo"
 						/>
-						<span id="roomsname">${room.name}</span>
+						<span>${room.name}</span>
 					</div>
 					<div class="rooms__info">
 						${
@@ -108,22 +107,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 			.addEventListener('click', setRoomsPassword);
 	};
 
-	const enterToRoom = async (e) => {
-		const roomsId = e.target.dataset.id;
-		const isProtected = e.target.dataset.isprotected;
+	const enterToRoom = async function () {
+		const roomsId = this.dataset.id;
+		const isProtected = this.dataset.isProtected;
 
-		if (isProtected) {
-			//passwordModal.show();
+		if (isProtected === "true") {
+
+			passwordModal.show();
+		} else {
+			await roomsService.enter(roomsId, roomsPassword);
+			await redirectToRoom();
 		}
-
-		await roomsService.enter(roomsId, roomsPassword);
-		await redirectToRoom();
 	};
 
 	const setRoomsPassword = async () => {   // Не работает
 		const secretRoomPasswordInput = document.querySelector('#secretRoomPasswordInput');
 		roomsPassword = secretRoomPasswordInput.value;
-		passwordModal.hide();
+		if (roomsPassword) {
+			await roomsService.enter(roomsId, roomsPassword);
+			passwordModal.hide();
+		}
 	}
 
 	await initRooms();

@@ -52,6 +52,10 @@ namespace GameApp.WebApi.Services.Rooms
 
 		public async Task Enter(int roomId, string password, int userId)
 		{
+			if (string.IsNullOrWhiteSpace(password))
+			{
+				password = null;
+			}
 			var isExist = await Context.Users.AnyAsync(u => u.CurrentRoomId == roomId && u.Id == userId);
 			if (isExist)
 			{
