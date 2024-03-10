@@ -112,20 +112,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const isProtected = this.dataset.isProtected;
 
 		if (isProtected === "true") {
-
+			document.querySelector('#passwordModal').dataset.room = roomsId;
 			passwordModal.show();
 		} else {
-			await roomsService.enter(roomsId, roomsPassword);
-			await redirectToRoom();
+			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);
+			if (tryToEnter) {
+				await redirectToRoom();
+			} else {
+				// вход не удался
+			}
 		}
 	};
 
-	const setRoomsPassword = async () => {   // Не работает
+	const setRoomsPassword = async () => {
 		const secretRoomPasswordInput = document.querySelector('#secretRoomPasswordInput');
 		roomsPassword = secretRoomPasswordInput.value;
 		if (roomsPassword) {
-			await roomsService.enter(roomsId, roomsPassword);
+			await roomsService.enter(document.querySelector('#passwordModal').dataset.room, roomsPassword);
 			passwordModal.hide();
+			await redirectToRoom();
 		}
 	}
 
