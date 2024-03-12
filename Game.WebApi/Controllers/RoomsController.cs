@@ -68,7 +68,7 @@ namespace GameApp.WebApi.Controllers
 						.SendAsync("PlayerEntered", playerData);
 				}
 
-				return Ok();
+				return Ok(true);
 			}
 			catch (Exception ex)
 			{

@@ -32,7 +32,9 @@ class RoomsService {
                     roomId,
                     password
             })
-            .then(function (response) { })
+            .then(function (response) {
+                return response.data;
+            })
             .catch(function (error) {
                 console.log(error);
             })

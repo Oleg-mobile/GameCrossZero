@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			document.querySelector('#passwordModal').dataset.room = roomsId;
 			passwordModal.show();
 		} else {
-			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);
+			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);  // undef., в сервисе = true
 			if (tryToEnter) {
 				await redirectToRoom();
 			} else {
