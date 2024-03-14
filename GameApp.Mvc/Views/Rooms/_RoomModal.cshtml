@@ -1,0 +1,81 @@
+﻿<div id="roomModal"
+	 class="modal"
+	 tabindex="-1">
+	<div class="modal-dialog modal-fullscreen">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="currentRoomName">Комната </h5>
+
+				<button type="button"
+						class="btn btn-primary"
+						id="exitRoomBtn"
+						data-bs-dismiss="modal"
+						aria-label="Close">
+					Выйти
+				</button>
+
+			</div>
+			<div class="modal-body">
+				<div class="room">
+					<div class="room__players">
+						<div class="room-player"
+							 id="player">
+							<div class="room-player__avatar">
+								<img class="room-player__logo circle"
+									 src="/img/gambler.ico"
+									 alt="" />
+							</div>
+							<div id="playerNickname"
+								 class="room-player__nickname">
+								Nick
+							</div>
+							<img class="room-player__ready d-none"
+								 id="playerready"
+								 src="/img/ready.ico"
+								 alt="" />
+						</div>
+
+						<img class="room-player__vs"
+							 src="/img/vs.ico"
+							 alt="" />
+
+						<div class="room-player"
+							 id="opponent">
+							<div class="room-player__avatar">
+								<img class="room-player__logo circle"
+									 src="/img/zhdun.ico"
+									 alt="" />
+							</div>
+							<div id="opponentNickname"
+								 class="room-player__nickname">
+								Пока никого нет...
+							</div>
+							<img class="room-player__ready d-none"
+								 id="opponentready"
+								 src="/img/ready.ico"
+								 alt="" />
+
+							<img class="room-player__ready d-none"
+								 id="opponentManager"
+								 src="/img/ready.ico"
+								 alt="" />
+
+						</div>
+					</div>
+
+					<button type="button"
+							class="btn btn-primary room__readybtn">
+						Готов
+					</button>
+
+					<button type="button"
+							id="playGame"
+							class="btn btn-primary room__playbtn d-none disabled">
+						Играть
+					</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -14,9 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const playbtn = document.querySelector('.room__playbtn');
 	let currentRoomId;
 	let roomsPassword = null;
+	let currentRoom;
 
 	const redirectToRoom = async () => {
-		const currentRoom = await roomsService.getCurrentRoom();
+		currentRoom = await roomsService.getCurrentRoom();
 		if (!currentRoom)
 			return;
 
@@ -60,8 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		roomModal.show();
 	};
-
-	await redirectToRoom();
 
 	const initRooms = async () => {
 		const roomsList = await roomsService.getAll();
@@ -192,8 +191,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	connection
 		.start()
-		.then(function () {
+		.then(async function () {
 			console.log('connection Started...');
+			await redirectToRoom();
 		})
 		.catch(function (err) {
 			return console.error(err);
@@ -216,23 +216,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	connection.on('PlayerEntered', function (playerData) {
 		console.log('PlayerEntered ' + playerData.login + ' ' + playerData.avatar);
-
-		if (currentRoom.opponent) {
 			opponentNickname.textContent = playerData.login;
-			if (currentRoom.opponent.avatar) {
+			if (playerData.avatar) {
 				document.querySelector('#opponent img').src =
 					`${APP_CONSTS.SERVER_URL}avatars/${playerData.avatar}`;
 
 			}
-		}
 	});
 
 	connection.on('PlayerIsOut', function (playerData) {
 		console.log('PlayerIsOut ' + playerData.login + ' ' + playerData.avatar);
-
-		if (currentRoom.opponent) {
-			opponentNickname.textContent = playerData.login;
+		opponentNickname.textContent = playerData.login;
+		if (playerData.avatar)
 			document.querySelector('#opponent img').src = playerData.avatar;
-		}
 	});
 });

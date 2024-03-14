@@ -27,7 +27,7 @@ class RoomsService {
     }
 
     async enter(roomId, password) {
-        await axios
+        return await axios
             .post(this.url + '/Enter', {
                     roomId,
                     password

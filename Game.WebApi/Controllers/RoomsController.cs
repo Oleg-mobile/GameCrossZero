@@ -55,7 +55,7 @@ namespace GameApp.WebApi.Controllers
 				await _roomService.Enter(input.RoomId, input.Password, playerId);
 				var currentRoom = await _roomService.GetCurrentRoom(playerId);
 
-				if (currentRoom.Opponent is not null)
+				if (currentRoom.Opponent is not null && GameHub._connectionUsers.ContainsKey(currentRoom.Opponent.Login))
 				{
 					var playerData = new UserShortDto
 					{
@@ -84,7 +84,12 @@ namespace GameApp.WebApi.Controllers
 				var playerId = await _userService.GetId(User.Identity!.Name!);
 				var currentRoom = await _roomService.GetCurrentRoom(playerId);
 
-				if (currentRoom.Opponent is not null)
+				if (currentRoom is null)
+				{
+					return BadRequest("Вы не находитесь в комнате");
+				}
+
+				if (currentRoom.Opponent is not null && GameHub._connectionUsers.ContainsKey(currentRoom.Opponent.Login))
 				{
 					var playerData = new UserShortDto
 					{
