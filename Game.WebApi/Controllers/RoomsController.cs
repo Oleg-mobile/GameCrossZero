@@ -53,6 +53,7 @@ namespace GameApp.WebApi.Controllers
 			{
 				var playerId = await _userService.GetId(User.Identity!.Name!);
 				await _roomService.Enter(input.RoomId, input.Password, playerId);
+
 				var currentRoom = await _roomService.GetCurrentRoom(playerId);
 
 				if (currentRoom.Opponent is not null && GameHub._connectionUsers.ContainsKey(currentRoom.Opponent.Login))

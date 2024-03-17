@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const modalForCreateRoom = new bootstrap.Modal(document.getElementById('createModal'));
 	const roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
 	const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
-	const playerReadyIcon = document.getElementById("playerready");
+	const playerReadyIcon = document.getElementById("playerReady");
 	const readyToPlayBtn = document.querySelector('.room__readybtn');
-	const opponentReadyIcon = document.getElementById("opponentready");
+	const opponentReadyIcon = document.getElementById("opponentReady");
 	const opponentNickname = document.querySelector('#opponentNickname');
 	const playbtn = document.querySelector('.room__playbtn');
 	let currentRoomId;
@@ -31,32 +31,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 				`${APP_CONSTS.SERVER_URL}avatars/${currentRoom.player.avatar}`;
 		}
 
+		if (currentRoom.player.isReadyToPlay) {
+			playerReadyIcon.classList.remove("d-none");
+			readyToPlayBtn.textContent = "Не готов";
+		}
+
 		if (currentRoom.opponent) {
 			opponentNickname.textContent = currentRoom.opponent.login;
 			if (currentRoom.opponent.avatar) {
 				document.querySelector('#opponent img').src =
 					`${APP_CONSTS.SERVER_URL}avatars/${currentRoom.opponent.avatar}`;
+			} else {
+				document.querySelector('#opponent img').src =
+					`/img/boy.ico`;
 			}
-		}
 
-		if (currentRoom.player.isReadyToPlay) {
-			playerReadyIcon.classList.remove("d-none");
-			readyToPlayBtn.textContent = "Не готов";
-		} else {
-			playerReadyIcon.classList.add("d-none");
-			readyToPlayBtn.textContent = "Готов";
-		}
+			if (currentRoom.opponent.isReadyToPlay) {
+				opponentReadyIcon.classList.remove("d-none");
 
-		if (currentRoom.opponent != null && currentRoom.opponent.isReadyToPlay) {
-			opponentReadyIcon.classList.remove("d-none");
-		} else {
-			opponentReadyIcon.classList.add("d-none");
-		}
-
-		if (currentRoom.player.isReadyToPlay && currentRoom.opponent.isReadyToPlay) {
-			playbtn.classList.remove("d-none");
-		} else {
-			playbtn.classList.add("d-none");
+				if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
+					playbtn.classList.remove("d-none");  // И disabled и d-none?
+					playbtn.classList.remove("disabled");
+				}
+			}
 		}
 
 		roomModal.show();
@@ -151,10 +148,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 				password: roomPasswordInput.value
 			};
 
-			await roomsService.create(dto);
-			modalForCreateRoom.hide();
-			await initRooms();
-			await redirectToRoom();
+			if ((/\s/g).test(dto.password)) {
+				document.querySelector('#roomPasswordMessage').textContent = "Пароль не корректный";
+			}
+			else {
+				await roomsService.create(dto);
+				modalForCreateRoom.hide();
+				await initRooms();
+				await redirectToRoom();
+			}
 		});
 
 	document
@@ -193,35 +195,40 @@ document.addEventListener('DOMContentLoaded', async () => {
 		.start()
 		.then(async function () {
 			console.log('connection Started...');
-			await redirectToRoom();
+			await redirectToRoom();     // Срабатывает по нажатию Готов/Не готов
 		})
 		.catch(function (err) {
 			return console.error(err);
 		});
 
-	connection.on('ChangeReady', function (isReady) {
+	connection.on('ChangeReady', function (isReady) {  // Кнопку Играть тоже выставлять?
 		console.log('ChangeReady ' + isReady);
 
 		if (isReady) {     // Не срабатывает?
 			opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay)
-				playbtn.classList.remove("d-none");
+			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
+				playbtn.classList.remove("d-none");  // И disabled и d-none?
+				playbtn.classList.remove("disabled");
+			}
 
 		} else {
 			opponentReadyIcon.classList.add("d-none");
 			playbtn.classList.add("d-none");
+			playbtn.classList.add("disabled");
 		}
 	});
 
 	connection.on('PlayerEntered', function (playerData) {
 		console.log('PlayerEntered ' + playerData.login + ' ' + playerData.avatar);
 			opponentNickname.textContent = playerData.login;
-			if (playerData.avatar) {
-				document.querySelector('#opponent img').src =
-					`${APP_CONSTS.SERVER_URL}avatars/${playerData.avatar}`;
-
-			}
+		if (playerData.avatar) {
+			document.querySelector('#opponent img').src =
+				`${APP_CONSTS.SERVER_URL}avatars/${playerData.avatar}`;
+		} else {
+			document.querySelector('#opponent img').src =
+				`/img/boy.ico`;
+		}
 	});
 
 	connection.on('PlayerIsOut', function (playerData) {
