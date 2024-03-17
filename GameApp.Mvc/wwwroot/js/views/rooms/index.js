@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			document.querySelector('#passwordModal').dataset.room = roomsId;
 			passwordModal.show();
 		} else {
-			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);  // undef., в сервисе = true
+			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);
 			if (tryToEnter) {
 				await redirectToRoom();
 			} else {
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	connection.on('ChangeReady', function (isReady) {  // Кнопку Играть тоже выставлять?
 		console.log('ChangeReady ' + isReady);
 
-		if (isReady) {     // Не срабатывает?
+		if (isReady) {
 			opponentReadyIcon.classList.remove("d-none");
 
 			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
