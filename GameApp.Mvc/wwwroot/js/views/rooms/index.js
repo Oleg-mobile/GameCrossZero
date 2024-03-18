@@ -150,8 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 			if ((/\s/g).test(dto.password)) {
 				document.querySelector('#roomPasswordMessage').textContent = "Пароль не корректный";
-			}
-			else {
+			} else {
 				await roomsService.create(dto);
 				modalForCreateRoom.hide();
 				await initRooms();
