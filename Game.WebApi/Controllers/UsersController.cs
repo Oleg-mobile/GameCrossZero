@@ -58,7 +58,7 @@ namespace GameApp.WebApi.Controllers
 				var isReady = await _userService.ChangeReady(userId);
 				var currentRoom = await _roomService.GetCurrentRoom(userId);
 
-				if (currentRoom.Opponent is not null)
+				if (currentRoom.Opponent is not null && GameHub._connectionUsers.ContainsKey(currentRoom.Opponent.Login))
 				{
 					await _gameHub.Clients
 						.Client(GameHub._connectionUsers[currentRoom.Opponent.Login])

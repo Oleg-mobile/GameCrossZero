@@ -10,16 +10,19 @@
     <Content Remove="compilerconfig.json" />
     <Content Remove="Views\Rooms\Index.cshtml" />
     <Content Remove="wwwroot\js\api\gamesService.js" />
+    <Content Remove="wwwroot\js\views\rooms\roomModal.js" />
   </ItemGroup>
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="compilerconfig.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\views\rooms\roomModal.js" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
     <None Include="Views\Rooms\Index.cshtml" />
     <None Include="wwwroot\js\api\gamesService.js" />
+    <None Include="wwwroot\js\views\rooms\roomModal.js" />
   </ItemGroup>
 
   <ItemGroup>
