@@ -1,16 +1,17 @@
-﻿import roomsService from '../../Api/roomsService.js';
-import APP_CONSTS from '../../common/appConsts.js';
-import { initRoomModalEvents, initRoomModalContent } from './roomModal.js';
+﻿import APP_CONSTS from '../../common/appConsts.js';
+import _roomsService from '../../Api/roomsService.js';
+import { _initRoomModalEvents, _initRoomModalContent } from './roomModal.js';
+import _initEventCreateRoomModal from './createRoomModal.js';
+import _initEventEnterToRoomModal from './enterToRoomModal.js';
 
-const modalForCreateRoom = new bootstrap.Modal(document.getElementById('createModal'));
-const roomModal = new bootstrap.Modal(document.getElementById('roomModal'));
-const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
-let roomsPassword = null;
-let currentRoom;
+const _roomModal = new bootstrap.Modal(document.getElementById('roomModal')),
+	_passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+let _roomsPassword = null;
+let _currentRoom;
 
 const initRooms = async () => {
-	const roomsList = await roomsService.getAll();
 	const roomContainer = document.querySelector('.rooms__items');
+	const roomsList = await _roomsService.getAll();
 	roomContainer.textContent = '';
 
 	roomsList.forEach((room) => {
@@ -44,11 +45,11 @@ const initRooms = async () => {
 
 	document
 		.querySelectorAll('.rooms__item')
-		.forEach((e) => e.addEventListener('click', enterToRoom));
+		.forEach((e) => e.addEventListener('click', onClickRoom));
 
 	document
 		.querySelector('#passwordBtn')
-		.addEventListener('click', setRoomsPassword);
+		.addEventListener('click', _initEventEnterToRoomModal);
 };
 
 // SirnalR
@@ -62,73 +63,46 @@ let connection = new signalR.HubConnectionBuilder()
 	.configureLogging(signalR.LogLevel.Information)
 	.build();
 
-	const redirectToRoom = async () => {
-		currentRoom = await roomsService.getCurrentRoom();
-		if (!currentRoom)
-			return;
+connection
+	.start()
+	.then(async function () {
+		console.log('connection Started...');
+		await redirectToRoom();
+	})
+	.catch(function (err) {
+		return console.error(err);
+	});
 
-		initRoomModalEvents({ currentRoom, onExit: initRooms, connection });
-		initRoomModalContent(currentRoom);
+const redirectToRoom = async () => {
+	_currentRoom = await _roomsService.getCurrentRoom();
+	if (!_currentRoom)
+		return;
 
-		roomModal.show();
-	};
+	_initRoomModalEvents({ currentRoom: _currentRoom, onExit: initRooms, connection });
+	_initRoomModalContent(_currentRoom);
 
-	const enterToRoom = async function () {
-		const roomsId = this.dataset.id;
-		const isProtected = this.dataset.isProtected;
+	_roomModal.show();
+};
 
-		if (isProtected === "true") {
-			document.querySelector('#passwordModal').dataset.room = roomsId;
-			passwordModal.show();
-		} else {
-			const tryToEnter = await roomsService.enter(roomsId, roomsPassword);
-			if (tryToEnter) {
-				await redirectToRoom();
-			} else {
-				// вход не удался
-			}
-		}
-	};
+const onClickRoom = async function () {
+	const roomsId = this.dataset.id,
+		isProtected = this.dataset.isProtected;
 
-	const setRoomsPassword = async () => {
-		const secretRoomPasswordInput = document.querySelector('#secretRoomPasswordInput');
-		roomsPassword = secretRoomPasswordInput.value;
-		if (roomsPassword) {
-			await roomsService.enter(document.querySelector('#passwordModal').dataset.room, roomsPassword);
-			passwordModal.hide();
+	if (isProtected === "true") {
+		document.querySelector('#passwordModal').dataset.room = roomsId;
+		_passwordModal.show();
+	} else {
+		const tryToEnter = await _roomsService.enter(roomsId, _roomsPassword);
+		if (tryToEnter) {
 			await redirectToRoom();
+		} else {
+			// вход не удался
 		}
 	}
+};
 
-	await initRooms();
+await _initEventEnterToRoomModal(_passwordModal, _roomsPassword);
 
-	const roomNameInput = document.querySelector('#roomName');
-	const roomPasswordInput = document.querySelector('#roomPassword');
+await initRooms();
 
-	document
-		.querySelector('#createRoom')
-		.addEventListener('click', async () => {
-			const dto = {
-				name: roomNameInput.value,
-				password: roomPasswordInput.value
-			};
-
-			if ((/\s/g).test(dto.password)) {
-				document.querySelector('#roomPasswordMessage').textContent = "Пароль не корректный";
-			} else {
-				await roomsService.create(dto);
-				modalForCreateRoom.hide();
-				await initRooms();
-				await redirectToRoom();
-			}
-		});
-
-	connection
-		.start()
-		.then(async function () {
-			console.log('connection Started...');
-			await redirectToRoom();     // Срабатывает по нажатию Готов/Не готов
-		})
-		.catch(function (err) {
-			return console.error(err);
-		});
+await _initEventCreateRoomModal();

@@ -7,9 +7,12 @@ const _playbtn = document.querySelector('.room__playbtn'),
 	_readyToPlayBtn = document.querySelector('.room__readybtn'),
 	_playerReadyIcon = document.getElementById("playerReady"),
 	_opponentReadyIcon = document.getElementById("opponentReady"),
-	_opponentNickname = document.querySelector('#opponentNickname');
+	_opponentNickname = document.querySelector('#opponentNickname'),
+	_playerManager = document.getElementById("playerManager"),
+	_opponentManager = document.getElementById("opponentManager");
 
-export const initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
+export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
+
 	_playbtn.addEventListener('click', async () => {
 		location.href = "games/" + currentRoom.id;
 	});
@@ -29,27 +32,39 @@ export const initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 			if (isReady) {
 				_playerReadyIcon.classList.remove("d-none");
 				_readyToPlayBtn.textContent = "Не готов";
+
+				if (currentRoom.opponent.isReadyToPlay) {
+					_playbtn.classList.remove("d-none");
+					_playbtn.classList.remove("disabled");
+				}
 			} else {
 				_playerReadyIcon.classList.add("d-none");
 				_readyToPlayBtn.textContent = "Готов";
+				if (!currentRoom.player.isPlayerRoomManager) {
+					_playbtn.classList.add("d-none");
+				}
+				_playbtn.classList.add("disabled");
 			}
 		});
 
-	connection.on('ChangeReady', function (isReady) {  // Кнопку Играть тоже выставлять?
+	connection.on('ChangeReady', function (isReady) {
 		console.log('ChangeReady ' + isReady);
 
 		if (isReady) {
 			_opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
-				_playbtn.classList.remove("d-none");  // И disabled и d-none?
+			if (currentRoom.player.isReadyToPlay) {
+				_playbtn.classList.remove("d-none");
 				_playbtn.classList.remove("disabled");
 			}
 
 		} else {
 			_opponentReadyIcon.classList.add("d-none");
-			_playbtn.classList.add("d-none");
 			_playbtn.classList.add("disabled");
+
+			if (!currentRoom.player.isPlayerRoomManager) {
+				_playbtn.classList.add("d-none");
+			}
 		}
 	});
 
@@ -73,7 +88,7 @@ export const initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 	});
 }
 
-export const initRoomModalContent = (currentRoom) => {
+export const _initRoomModalContent = (currentRoom) => {
 	document.querySelector('#currentRoomName').innerText = currentRoom.roomName;
 	document.querySelector('#playerNickname').textContent = currentRoom.player.login;
 
@@ -100,10 +115,17 @@ export const initRoomModalContent = (currentRoom) => {
 		if (currentRoom.opponent.isReadyToPlay) {
 			_opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
-				_playbtn.classList.remove("d-none");  // И disabled и d-none?
+			if (currentRoom.player.isReadyToPlay) {
+				_playbtn.classList.remove("d-none");
 				_playbtn.classList.remove("disabled");
 			}
 		}
+	}
+
+	if (currentRoom.isPlayerRoomManager) {
+		_playerManager.classList.remove("d-none");
+		_playbtn.classList.remove("d-none");
+	} else {
+		_opponentManager.classList.remove("d-none");
 	}
 }

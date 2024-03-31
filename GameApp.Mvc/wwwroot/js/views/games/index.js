@@ -1,6 +1,6 @@
 ﻿
-document.addEventListener('DOMContentLoaded', async () => {
 
+const roomId = dataset.data - room - id;  // dataset is not defined
     const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));
 
     gameModal.show();
@@ -22,12 +22,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    const roomId = dataset.room-id;
-
     const gameInfo = await gamesService.gameInfo(roomId);
     document.querySelector('#whoseMove').textContent = gameInfo.WhoseMoveId;
-
-});
 
 
 
