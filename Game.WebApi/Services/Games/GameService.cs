@@ -94,14 +94,25 @@ namespace GameApp.WebApi.Services.Games
 			var game = await Context.Games.FindAsync(room.CurrentGameId);
 
             var userGame = await Context.UserGames.FirstAsync(ug => ug.GameId == room.CurrentGameId && ug.UserId == userId);
+            
             // Include!
 
-            //public IEnumerable<StepDto> Steps { get; set; }
+            var gameProgress = await Context.GameProgresses.FirstAsync(gp => gp.GameId == game.Id && gp.UserId == userId);
 
-            return new InfoGameDto
+			var steps = new List<StepDto>
+			{
+				new StepDto
+				{
+					IsCross = userGame.IsCross,
+					CellNumber = gameProgress.Cell
+				}
+			};
+
+			return new InfoGameDto
             {
                 WhoseMoveId = game!.WhoseMoveId,
                 IsMyFigureCross = userGame.IsCross,
+                Steps = steps
 			};
         }
 	}

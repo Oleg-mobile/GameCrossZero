@@ -1,7 +1,7 @@
 ﻿using GameApp.WebApi.Hubs;
 using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Games.Dto;
-using GameApp.WebApi.Services.Users.Dto;
+using GameApp.WebApi.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -10,11 +10,13 @@ namespace GameApp.WebApi.Controllers
 	public class GamesController : GameAppController
 	{
 		private readonly IGameService _gameService;
+		private readonly IUserService _userService;
 		private readonly IHubContext<GameHub> _gameHub;
 
-		public GamesController(IGameService gameService, IHubContext<GameHub> gameHub = null)
+		public GamesController(IGameService gameService, IUserService userService, IHubContext<GameHub> gameHub = null)
 		{
 			_gameService = gameService;
+			_userService = userService;
 			_gameHub = gameHub;
 		}
 
@@ -50,11 +52,7 @@ namespace GameApp.WebApi.Controllers
 		[ProducesResponseType(typeof(InfoGameDto), StatusCodes.Status200OK)]
 		public async Task<IActionResult> GetInfo(int roomId)
 		{
-			int userId = 1; // Заглушка
-
-			//await _gameHub.Clients
-			//	.Client(GameHub._connectionUsers[currentRoom.Opponent.Login])
-			//	.SendAsync("PlayerEntered", playerData);
+			var userId = await _userService.GetId(User.Identity!.Name!);
 
 			return Ok(await _gameService.GetInfoAsync(roomId, userId));
 		}
