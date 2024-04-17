@@ -50,12 +50,13 @@ namespace GameApp.WebApi.Controllers
 		[ProducesResponseType(typeof(InfoGameDto), StatusCodes.Status200OK)]
 		public async Task<IActionResult> GetInfo(int roomId)
 		{
+			int userId = 1; // Заглушка
 
 			//await _gameHub.Clients
 			//	.Client(GameHub._connectionUsers[currentRoom.Opponent.Login])
 			//	.SendAsync("PlayerEntered", playerData);
 
-			return Ok(await _gameService.GetInfoAsync(roomId));
+			return Ok(await _gameService.GetInfoAsync(roomId, userId));
 		}
 	}
 }

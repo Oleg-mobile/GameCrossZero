@@ -3,6 +3,7 @@ using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Games.Dto;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace GameApp.WebApi.Services.Games
@@ -82,16 +83,26 @@ namespace GameApp.WebApi.Services.Games
             Context.SaveChanges();
         }
 
-        public async Task<InfoGameDto> GetInfoAsync(int roomId)
+        public async Task<InfoGameDto> GetInfoAsync(int roomId, int userId)
         {
+            var room = await Context.Rooms.FindAsync(roomId);
+            if (!room.CurrentGameId.HasValue)
+            {
+                throw new Exception("У данной комнаты нет игры");
+            }
+
+			var game = await Context.Games.FindAsync(room.CurrentGameId);
+
+            var userGame = await Context.UserGames.FirstAsync(ug => ug.GameId == room.CurrentGameId && ug.UserId == userId);
+            // Include!
+
+            //public IEnumerable<StepDto> Steps { get; set; }
 
             return new InfoGameDto
             {
-                WinnerId = 1,
-                Winner = null,
-                WhoseMoveId = 2,
-                WhoseMove = null
-            };
+                WhoseMoveId = game!.WhoseMoveId,
+                IsMyFigureCross = userGame.IsCross,
+			};
         }
 	}
 }

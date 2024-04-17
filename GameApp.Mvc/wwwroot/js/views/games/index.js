@@ -1,9 +1,9 @@
 ﻿
+const _gameModalNode = document.getElementById('gameModal');
+const _roomId = _gameModalNode.dataset.roomId;  // dataset is not defined
+const _gameModal = new bootstrap.Modal(_gameModalNode);
 
-//const roomId = dataset.roomId;  // dataset is not defined
-const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));
-
-gameModal.show();
+_gameModal.show();
 
 let cross = new Image();
 let zero = new Image();
