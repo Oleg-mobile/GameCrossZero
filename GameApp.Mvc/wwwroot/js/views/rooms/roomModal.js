@@ -25,6 +25,10 @@ export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 			await onExit();
 		});
 
+	if (currentRoom.isPlayerRoomManager) {
+		_playbtn.classList.remove("d-none");
+	}
+
 	_readyToPlayBtn
 		.addEventListener('click', async () => {
 			let isReady = await _usersService.changeReady();
@@ -33,19 +37,21 @@ export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 				_playerReadyIcon.classList.remove("d-none");
 				_readyToPlayBtn.textContent = "Не готов";
 
-				if (currentRoom.opponent.isReadyToPlay) {
-					_playbtn.classList.remove("d-none");
+				if (currentRoom.opponent.isReadyToPlay && currentRoom.isPlayerRoomManager) {
 					_playbtn.classList.remove("disabled");
 				}
 			} else {
 				_playerReadyIcon.classList.add("d-none");
 				_readyToPlayBtn.textContent = "Готов";
-				if (!currentRoom.player.isPlayerRoomManager) {
-					_playbtn.classList.add("d-none");
+
+				if (currentRoom.isPlayerRoomManager) {
+					_playbtn.classList.add("disabled");
 				}
-				_playbtn.classList.add("disabled");
 			}
 		});
+
+	// Не обновляются currentRoom.player.isReadyToPlay и currentRoom.opponent.isReadyToPlay
+	// Скорее всего дело в том, что не обновляется currentRoom
 
 	connection.on('ChangeReady', function (isReady) {
 		console.log('ChangeReady ' + isReady);
@@ -53,17 +59,15 @@ export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 		if (isReady) {
 			_opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay) {
-				_playbtn.classList.remove("d-none");
+			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
 				_playbtn.classList.remove("disabled");
 			}
 
 		} else {
 			_opponentReadyIcon.classList.add("d-none");
-			_playbtn.classList.add("disabled");
 
-			if (!currentRoom.player.isPlayerRoomManager) {
-				_playbtn.classList.add("d-none");
+			if (currentRoom.isPlayerRoomManager) {
+				_playbtn.classList.add("disabled");
 			}
 		}
 	});
@@ -115,7 +119,7 @@ export const _initRoomModalContent = (currentRoom) => {
 		if (currentRoom.opponent.isReadyToPlay) {
 			_opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay) {
+			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
 				_playbtn.classList.remove("d-none");
 				_playbtn.classList.remove("disabled");
 			}
