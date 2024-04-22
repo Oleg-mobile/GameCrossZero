@@ -33,6 +33,8 @@ export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 		.addEventListener('click', async () => {
 			let isReady = await _usersService.changeReady();
 
+			currentRoom.player.isReadyToPlay = isReady;
+
 			if (isReady) {
 				_playerReadyIcon.classList.remove("d-none");
 				_readyToPlayBtn.textContent = "Не готов";
@@ -50,16 +52,15 @@ export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 			}
 		});
 
-	// Не обновляются currentRoom.player.isReadyToPlay и currentRoom.opponent.isReadyToPlay
-	// Скорее всего дело в том, что не обновляется currentRoom
-
 	connection.on('ChangeReady', function (isReady) {
 		console.log('ChangeReady ' + isReady);
+
+		currentRoom.opponent.isReadyToPlay = isReady;
 
 		if (isReady) {
 			_opponentReadyIcon.classList.remove("d-none");
 
-			if (currentRoom.player.isReadyToPlay && currentRoom.isPlayerRoomManager) {
+			if (currentRoom.isPlayerRoomManager) {
 				_playbtn.classList.remove("disabled");
 			}
 

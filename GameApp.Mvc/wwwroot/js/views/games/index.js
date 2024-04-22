@@ -1,6 +1,7 @@
-﻿
+﻿import _gamesService from '../../Api/gamesService.js';
+
 const _gameModalNode = document.getElementById('gameModal');
-const _roomId = _gameModalNode.dataset.roomId;  // dataset is not defined
+const _roomId = _gameModalNode.dataset.roomId;
 const _gameModal = new bootstrap.Modal(_gameModalNode);
 
 _gameModal.show();
@@ -22,7 +23,8 @@ document.querySelector('table').onclick = function (e) {
     }
 }
 
-//const gameInfo = await gamesService.gameInfo(roomId);
+const gameInfo = await _gamesService.getInfo(_roomId);
+console.log(gameInfo);
 //document.querySelector('#whoseMove').textContent = gameInfo.WhoseMoveId;
 
 

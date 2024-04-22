@@ -9,10 +9,10 @@ namespace GameApp.Domain.Models
         [ForeignKey("RoomId")]
         public Room Room { get; set; }
 
-        public int WinnerId { get; set; }
+        public int? WinnerId { get; set; }
 
         [ForeignKey("WinnerId")]
-        public User Winner { get; set; }
+        public User? Winner { get; set; }
 
         public int WhoseMoveId { get; set; }
 

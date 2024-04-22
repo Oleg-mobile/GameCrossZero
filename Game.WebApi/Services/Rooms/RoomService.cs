@@ -130,7 +130,7 @@ namespace GameApp.WebApi.Services.Rooms
 
 			return new CurrentRoomDto
 			{
-				IsGameStarted = player.CurrentRoom.Id != null,                     // TODO ???
+				IsGameStarted = player.CurrentRoom.CurrentGameId != null,
 				IsPlayerRoomManager = player.CurrentRoom.ManagerId == userId,
 				Player = Mapper.Map<UserDto>(player),
 				Opponent = Mapper.Map<UserDto>(opponent),

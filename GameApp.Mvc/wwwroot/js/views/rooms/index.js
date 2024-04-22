@@ -75,8 +75,13 @@ connection
 
 const redirectToRoom = async () => {
 	_currentRoom = await _roomsService.getCurrentRoom();
+
 	if (!_currentRoom)
 		return;
+
+	if (_currentRoom.isGameStarted) {
+		location.href = "games/" + _currentRoom.id;
+	}
 
 	_initRoomModalEvents({ currentRoom: _currentRoom, onExit: initRooms, connection });
 	_initRoomModalContent(_currentRoom);
