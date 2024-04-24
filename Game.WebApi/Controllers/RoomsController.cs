@@ -1,5 +1,4 @@
-﻿using GameApp.Domain.Models;
-using GameApp.WebApi.Hubs;
+﻿using GameApp.WebApi.Hubs;
 using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Rooms.Dto;
 using GameApp.WebApi.Services.Users;

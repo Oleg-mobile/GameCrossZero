@@ -94,7 +94,7 @@ namespace GameApp.WebApi.Services.Games
 
 			var userGame = await Context.UserGames.FirstAsync(ug => ug.GameId == room.CurrentGameId && ug.UserId == userId);
 
-			// Include!
+			// TODO Include!
 
 			var gameProgress = await Context.GameProgresses.Where(gp => gp.GameId == game.Id).ToListAsync();
 
@@ -106,10 +106,11 @@ namespace GameApp.WebApi.Services.Games
 
 			return new InfoGameDto
 			{
-				WhoseMoveId = game!.WhoseMoveId,
+				IsMyStep = game!.WhoseMoveId == userId,
 				IsMyFigureCross = userGame.IsCross,
-				Steps = steps
-			};
+				Steps = steps,
+				GameId = game.Id
+            };
 		}
 	}
 }

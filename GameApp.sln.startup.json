@@ -1,19 +1,18 @@
 {
     "Version": 3,
     "ListAllProjects": true,
-
     "MultiProjectConfigurations": {
-    "api + mvc": {
+        "api + mvc": {
             "Projects": {
-              "GameApp.Mvc": {
-                "SolutionConfiguration": "Debug",
-                "ProfileName":  "https"
-              },
-              "GameApp.WebApi": {
-                "SolutionConfiguration": "Debug",
-                "ProfileName": "https"
-              }
+                "GameApp.Mvc": {
+                    "SolutionConfiguration": "Debug",
+                    "ProfileName": "https"
+                },
+                "GameApp.WebApi": {
+                    "SolutionConfiguration": "Debug",
+                    "ProfileName": "https"
+                }
             }
-          }
-  }
+        }
+    }
 }

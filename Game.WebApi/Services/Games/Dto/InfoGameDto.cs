@@ -2,8 +2,9 @@
 {
 	public class InfoGameDto
 	{
-		public int WhoseMoveId { get; set; }
+		public bool IsMyStep { get; set; }
 		public bool IsMyFigureCross { get; set; }
 		public IEnumerable<StepDto> Steps { get; set; }
+		public int GameId { get; set; }
 	}
 }
