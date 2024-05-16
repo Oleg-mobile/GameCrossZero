@@ -18,24 +18,18 @@ namespace GameApp.WebApi.Services.Games
 
 		public async Task<int> CreateAsync(CreateGameDto input)
 		{
-			//var isExist = Context.Games.Any(u => u.RoomId == input.RoomId);
+            var room = await Context.Rooms.FindAsync(input.RoomId);
+            if (room.CurrentGameId is not null)
+            {
+                throw new Exception($"В комнате с id = {input.RoomId} игра уже создана");
+            }
 
-			//if (isExist)
-			//{
-			//	throw new Exception($"Игра уже существует");
-			//}
-			try
-			{
-				var game = Mapper.Map<Game>(input);
-				await Context.Games.AddAsync(game);
-				await Context.SaveChangesAsync();
-				return game.Id;
-			}
-			catch(Exception ex)
-			{
-				throw ex;
-			}
-		}
+            var game = Mapper.Map<Game>(input);
+            await Context.Games.AddAsync(game);
+            await Context.SaveChangesAsync();
+
+            return game.Id;
+        }
 
 		public async Task StartAsync(int roomId)
 		{
