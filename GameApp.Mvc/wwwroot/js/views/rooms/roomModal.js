@@ -1,6 +1,7 @@
 ﻿import APP_CONSTS from '../../common/appConsts.js';
 import _roomsService from '../../Api/roomsService.js';
 import _usersService from '../../Api/usersService.js';
+import _gamesService from '../../Api/gamesService.js';
 
 const _playbtn = document.querySelector('.room__playbtn'),
 	_roomModal = new bootstrap.Modal(document.getElementById('roomModal')),
@@ -14,6 +15,8 @@ const _playbtn = document.querySelector('.room__playbtn'),
 export const _initRoomModalEvents = ({ currentRoom, onExit, connection }) => {
 
 	_playbtn.addEventListener('click', async () => {
+		// TODO сделать loader
+		await _gamesService.start(currentRoom.id);
 		location.href = "games/" + currentRoom.id;
 	});
 

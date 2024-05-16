@@ -7,7 +7,7 @@ class GamesService {
 
     async start(roomId) {
         await axios
-            .post(this.url + '/Start', roomId)
+            .post(this.url + '/Start?roomId=' + roomId)
             .then(function (response) { })
             .catch(function (error) {
                 console.log(error);

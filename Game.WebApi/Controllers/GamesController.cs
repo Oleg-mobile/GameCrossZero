@@ -35,7 +35,7 @@ namespace GameApp.WebApi.Controllers
 		}
 
 		[HttpPost("[action]")]
-		public async Task<IActionResult> Start(int roomId)
+		public async Task<IActionResult> Start([FromQuery] int roomId)
 		{
 			try
 			{

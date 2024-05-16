@@ -3,7 +3,7 @@
 const _gameModalNode = document.getElementById('gameModal');
 const _whoseMove = document.querySelector('#whoseMove');
 const _figure = document.querySelector('#figure');
-const _roomId = _gameModalNode.dataset.roomId;
+const _roomId = +_gameModalNode.dataset.roomId;
 const _gameModal = new bootstrap.Modal(_gameModalNode);
 const _table = document.querySelector('table');
 let _isMyFigureCross;

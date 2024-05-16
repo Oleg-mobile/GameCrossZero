@@ -12,9 +12,10 @@ namespace GameApp.WebApi.Mapping
         {
             CreateMap<CreateUserDto, User>();
 			CreateMap<User, UserDto>();
-            CreateMap<CreateRoomDto, Room>().ForMember(dest => dest.Password, opt => opt.MapFrom(src =>
-			    string.IsNullOrWhiteSpace(src.Password) ? null : src.Password.Trim()));
-            CreateMap<CreateGameDto, Game>();
+            CreateMap<CreateRoomDto, Room>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.Password) ? null : src.Password.Trim()));
+            CreateMap<CreateGameDto, Game>()
+				.ForMember(dest => dest.WinnerId, opt => opt.MapFrom(src => default(int?)));
 			CreateMap<InfoGameDto, Game>().ReverseMap();
 			CreateMap<RoomDto, Room>();
         }

@@ -16,18 +16,25 @@ namespace GameApp.WebApi.Services.Games
 			_startGameValidator = startGameValidator;
 		}
 
-		public async Task CreateAsync(CreateGameDto input)
+		public async Task<int> CreateAsync(CreateGameDto input)
 		{
-			var isExist = Context.Games.Any(u => u.Id == input.Id);
+			//var isExist = Context.Games.Any(u => u.RoomId == input.RoomId);
 
-			if (isExist)
+			//if (isExist)
+			//{
+			//	throw new Exception($"Игра уже существует");
+			//}
+			try
 			{
-				throw new Exception($"Игра с Id = {input.Id} уже существует");
+				var game = Mapper.Map<Game>(input);
+				await Context.Games.AddAsync(game);
+				await Context.SaveChangesAsync();
+				return game.Id;
 			}
-
-			var game = Mapper.Map<Game>(input);
-			await Context.Games.AddAsync(game);
-			await Context.SaveChangesAsync();
+			catch(Exception ex)
+			{
+				throw ex;
+			}
 		}
 
 		public async Task StartAsync(int roomId)
@@ -60,12 +67,12 @@ namespace GameApp.WebApi.Services.Games
 			}
 
 			game.RoomId = roomId;
-			await CreateAsync(game);
-			Context.SaveChanges();
+			int gameId = await CreateAsync(game);
+			await Context.SaveChangesAsync();
 
 			var userGame = new UserGame
 			{
-				GameId = game.Id,
+				GameId = gameId,
 				UserId = firsrPlayer.Id,
 				IsCross = isCross
 			};
@@ -73,13 +80,17 @@ namespace GameApp.WebApi.Services.Games
 
 			userGame = new UserGame
 			{
-				GameId = game.Id,
+				GameId = gameId,
 				UserId = secondPlayer.Id,
 				IsCross = !isCross
 			};
 			Context.UserGames.Add(userGame);
 
-			Context.SaveChanges();
+			var room = await Context.Rooms.FindAsync(roomId);
+			room.CurrentGameId = gameId;
+			Context.Rooms.Update(room);
+
+			await Context.SaveChangesAsync();
 		}
 
 		public async Task<InfoGameDto> GetInfoAsync(int roomId, int userId)
