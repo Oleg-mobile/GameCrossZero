@@ -170,6 +170,28 @@
         }
       }
     },
+    "/api/Games/FixStep": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "parameters": [
+          {
+            "name": "cellsNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/Rooms/Create": {
       "post": {
         "tags": [
@@ -244,23 +266,25 @@
         "tags": [
           "Rooms"
         ],
-        "parameters": [
-          {
-            "name": "roomId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterRoomDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterRoomDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterRoomDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -432,10 +456,6 @@
       "CreateGameDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "roomId": {
             "type": "integer",
             "format": "int32"
@@ -491,33 +511,16 @@
         },
         "additionalProperties": false
       },
-      "Game": {
+      "EnterRoomDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "roomId": {
             "type": "integer",
             "format": "int32"
           },
-          "room": {
-            "$ref": "#/components/schemas/Room"
-          },
-          "winnerId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "winner": {
-            "$ref": "#/components/schemas/User"
-          },
-          "whoseMoveId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "whoseMove": {
-            "$ref": "#/components/schemas/User"
+          "password": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -525,19 +528,22 @@
       "InfoGameDto": {
         "type": "object",
         "properties": {
-          "winnerId": {
+          "isMyStep": {
+            "type": "boolean"
+          },
+          "isMyFigureCross": {
+            "type": "boolean"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepDto"
+            },
+            "nullable": true
+          },
+          "gameId": {
             "type": "integer",
             "format": "int32"
-          },
-          "winner": {
-            "$ref": "#/components/schemas/User"
-          },
-          "whoseMoveId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "whoseMove": {
-            "$ref": "#/components/schemas/User"
           }
         },
         "additionalProperties": false
@@ -549,39 +555,6 @@
         ],
         "type": "integer",
         "format": "int32"
-      },
-      "Room": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "managerId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "manager": {
-            "$ref": "#/components/schemas/User"
-          },
-          "currentGameId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "currentGame": {
-            "$ref": "#/components/schemas/Game"
-          }
-        },
-        "additionalProperties": false
       },
       "RoomDto": {
         "type": "object",
@@ -608,6 +581,19 @@
         },
         "additionalProperties": false
       },
+      "StepDto": {
+        "type": "object",
+        "properties": {
+          "isCross": {
+            "type": "boolean"
+          },
+          "cellNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "TokenDto": {
         "type": "object",
         "properties": {
@@ -618,50 +604,6 @@
           "expires": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "login": {
-            "type": "string",
-            "nullable": true
-          },
-          "nickname": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "role": {
-            "$ref": "#/components/schemas/RoleType"
-          },
-          "avatar": {
-            "type": "string",
-            "nullable": true
-          },
-          "raiting": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "currentRoomId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "isReadyToPlay": {
-            "type": "boolean"
-          },
-          "currentRoom": {
-            "$ref": "#/components/schemas/Room"
           }
         },
         "additionalProperties": false

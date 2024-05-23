@@ -56,5 +56,21 @@ namespace GameApp.WebApi.Controllers
 
 			return Ok(await _gameService.GetInfoAsync(roomId, userId));
 		}
-	}
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> FixStep([FromQuery] int cellsNumber)
+        {
+            try
+            {
+                var userId = await _userService.GetId(User.Identity!.Name!);
+
+                await _gameService.FixStepAsync(cellsNumber, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
 }

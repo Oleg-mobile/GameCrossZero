@@ -29,6 +29,17 @@ class GamesService {
                 console.log(error);
             });
     }
+
+    async fixStep(cellsNumber) {
+        await axios
+            .post(this.url + '/FixStep?cellsNumber=' + cellsNumber)
+            .then(function (response) { })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+            });
+    }
 }
 
 export default new GamesService();

@@ -42,35 +42,37 @@ if (_isMyFigureCross === true) {
     _myFigure = "url(" + zero.src + ")";
 }
 
-//var cellsMap = _table.cells;
-var cellsMap = _table.getElementsByTagName('td');
+const initField = async function () {
+    var cellsMap = _table.getElementsByTagName('td');
 
-for (var i = 0; i < gameInfo.steps.length; i++) {
-    gameInfo.steps[i].isCross ?
-        cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + cross.src + ")" :
-        cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + zero.src + ")";
+    for (var i = 0; i < gameInfo.steps.length; i++) {
+        gameInfo.steps[i].isCross ?
+            cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + cross.src + ")" :
+            cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + zero.src + ")";
+    }
 }
 
-if (gameInfo.isMyStep === true) {
-    _whoseMove.textContent = "Ваш";
+initField();
 
-    //for (var i = 0; i < cellsMap.length; i++) {
-    //    cellsMap[i].addEventListener('click', function () {
-    //        if (cellsMap[i].style.backgroundImage === "none") {
-    //            cellsMap[i].style.backgroundImage = _myFigure;
-    //        }
-    //    });
-    //}
-
+const makeStep = async function () {
+    var cellNumber = 0;
     _table.onclick = function (e) {
         let element = e.target;
         if (element.tagName === 'TD') {
             if (element.style.backgroundImage === "") {
                 element.style.backgroundImage = _myFigure;
+                cellNumber = +element.dataset.cellNumber;
             }
         }
     }
+    return cellNumber;
+}
 
+if (gameInfo.isMyStep === true) {
+    _whoseMove.textContent = "Ваш";
+
+    let cellNumber = makeStep();
+    await _gamesService.fixStep(cellNumber);
 
 } else {
     _whoseMove.textContent = "оппонента";
