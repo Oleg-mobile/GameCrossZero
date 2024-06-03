@@ -58,13 +58,13 @@ namespace GameApp.WebApi.Controllers
 		}
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> FixStep([FromQuery] int cellsNumber)
+        public async Task<IActionResult> DoStep([FromQuery] int cellsNumber)
         {
             try
             {
                 var userId = await _userService.GetId(User.Identity!.Name!);
 
-                await _gameService.FixStepAsync(cellsNumber, userId);
+                await _gameService.DoStepAsync(cellsNumber, userId);
                 return Ok();
             }
             catch (Exception ex)

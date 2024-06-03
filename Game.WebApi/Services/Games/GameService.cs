@@ -118,7 +118,7 @@ namespace GameApp.WebApi.Services.Games
             };
 		}
 
-		public async Task FixStepAsync(int cellsNumber, int userId)
+		public async Task DoStepAsync(int cellsNumber, int userId)
 		{
             var gameProgress = await Context.GameProgresses.Where(gp => gp.UserId == userId).ToListAsync();
 

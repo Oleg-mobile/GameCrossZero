@@ -72,7 +72,7 @@ if (gameInfo.isMyStep === true) {
     _whoseMove.textContent = "Ваш";
 
     let cellNumber = makeStep();
-    await _gamesService.fixStep(cellNumber);
+    await _gamesService.doStep(cellNumber);
 
 } else {
     _whoseMove.textContent = "оппонента";
