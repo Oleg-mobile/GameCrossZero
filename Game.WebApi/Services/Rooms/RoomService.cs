@@ -2,6 +2,7 @@
 using FluentValidation;
 using GameApp.Domain;
 using GameApp.Domain.Models;
+using GameApp.WebApi.Services.Games.Dto;
 using GameApp.WebApi.Services.Rooms.Dto;
 using GameApp.WebApi.Services.Users.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,20 @@ namespace GameApp.WebApi.Services.Rooms
 
 		public async Task Enter(int roomId, string password, int userId)
 		{
-			if (string.IsNullOrWhiteSpace(password))
+			//List<int> listBig = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
+   //         List<int> listLittle = new List<int> { 1, 3, 2 };
+
+   //         var hash2 = new HashSet<int>(listBig);
+
+   //         if (hash2.IsSupersetOf(listLittle))
+   //         {
+   //             System.Console.WriteLine("321");
+   //         }
+
+
+
+
+            if (string.IsNullOrWhiteSpace(password))
 			{
 				password = null;
 			}

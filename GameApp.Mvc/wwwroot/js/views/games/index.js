@@ -1,4 +1,5 @@
-﻿import _gamesService from '../../Api/gamesService.js';
+﻿import APP_CONSTS from '../../common/appConsts.js';
+import _gamesService from '../../Api/gamesService.js';
 
 const _gameModalNode = document.getElementById('gameModal');
 const _whoseMove = document.querySelector('#whoseMove');
@@ -16,17 +17,6 @@ let zero = new Image();
 
 cross.src = "/img/cross.ico"; 
 zero.src = "/img/zero.ico";
-
-//_table.onclick = function (e) {
-//    let element = e.target;
-//    if (element.tagName === 'TD') {
-//        if (element.style.backgroundImage.indexOf(cross.src) >= 0) {
-//            element.style.backgroundImage = "url(" + zero.src + ")";
-//        } else {
-//            element.style.backgroundImage = "url(" + cross.src + ")";
-//        }
-//    }
-//}
 
 const gameInfo = await _gamesService.getInfo(_roomId);
 
@@ -71,11 +61,36 @@ const makeStep = async function () {
 if (gameInfo.isMyStep === true) {
     _whoseMove.textContent = "Ваш";
 
-    let cellNumber = makeStep();
-    await _gamesService.doStep(cellNumber);
+    let cellsNumber = makeStep();  // promise ?
+    await _gamesService.doStep(cellsNumber);
 
 } else {
     _whoseMove.textContent = "оппонента";
     _table.style.cursor = 'not-allowed';
 }
+
+
+let connection = new signalR.HubConnectionBuilder()
+    .withUrl(APP_CONSTS.SERVER_URL + 'gameHub', {
+        withCredentials: false,
+        accessTokenFactory: () => {
+            return Cookies.get("token");
+        },
+    })
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
+
+connection
+    .start()
+    .then(async function () {
+        console.log('connection Started...');
+    })
+    .catch(function (err) {
+        return console.error(err);
+    });
+
+connection.on('StepResult', function (stepInfo) {
+    console.log('StepResult ' + stepInfo.CellNumber + ' ' + stepInfo.IsGameFinished);
+
+});
 

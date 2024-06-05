@@ -4,6 +4,7 @@ using GameApp.Domain;
 using GameApp.Domain.Models;
 using GameApp.WebApi.Services.Games.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace GameApp.WebApi.Services.Games
 {
@@ -118,12 +119,95 @@ namespace GameApp.WebApi.Services.Games
             };
 		}
 
-		public async Task DoStepAsync(int cellsNumber, int userId)
+		public async Task<StepInfoDto> DoStepAsync(int cellsNumber, int userId, int opponentId)
 		{
-            var gameProgress = await Context.GameProgresses.Where(gp => gp.UserId == userId).ToListAsync();
+			
+            var user = await Context.Users.Include(u => u.CurrentRoom).FirstAsync(r => r.Id == userId);
+			if (user is null)
+			{
+                throw new Exception($"Игрока с Id={userId} не существует");
+            }
 
+			var game = await Context.Games.FirstAsync(g => g.Id == user.CurrentRoom.CurrentGameId && g.RoomId == user.CurrentRoom.Id);
+			if (game.WhoseMoveId != userId)
+			{
+                throw new Exception("Ход другого игрока");
+            }
 
+            var gameProgressByGame = await Context.GameProgresses.Where(gp => gp.GameId == game.Id).ToListAsync();
+			bool isCellBusy = gameProgressByGame.Any(gp => gp.Cell == cellsNumber);
+			if (isCellBusy)
+			{
+                throw new Exception($"Ячейка {cellsNumber} занята");
+            }
+			var numberOfSteps = gameProgressByGame.Count();
+
+			if (numberOfSteps >= Utils.Constants.maxCell)  // или 8?
+			{
+                throw new Exception($"Игра {game.Id} завершена");
+            }
+
+            game.WhoseMoveId = opponentId;
+
+			var gameProgress = new GameProgress()
+			{
+				GameId = game.Id,
+				UserId = userId,
+				Cell = cellsNumber,
+				StrokeNumber = numberOfSteps + 1
+			};
+
+			var gameProgressByUser = gameProgressByGame.Where(gp => gp.UserId == userId).Select(gp => gp.Cell).ToList();
+			gameProgressByUser.Add(cellsNumber);
+			var hash = new HashSet<int>(gameProgressByUser);
+            var winnerPositions = new WinningCombinationsDto();
+			bool isWin = false;
+
+			foreach (var position in winnerPositions.Horizontal)
+			{
+                if (hash.IsSupersetOf(position))
+                {
+					isWin = true;
+					// Горизонтальная победа
+                }
+            }
+
+            foreach (var position in winnerPositions.Vertical)
+            {
+                if (hash.IsSupersetOf(position))
+                {
+                    isWin = true;
+                    // Вертикальная победа
+                }
+            }
+
+            if (hash.IsSupersetOf(winnerPositions.LeftDiagonal))
+            {
+                isWin = true;
+                // Левая диагональная победа
+            }
+
+            if (hash.IsSupersetOf(winnerPositions.RightDiagonal))
+            {
+                isWin = true;
+                // Правая диагональная победа
+            }
+
+            if (isWin)
+			{
+                game.WhoseMoveId = null;
+				game.WinnerId = userId;
+            }
+
+            Context.GameProgresses.Add(gameProgress);
+            Context.Games.Update(game);
+            await Context.SaveChangesAsync();
+
+            return new StepInfoDto
+			{
+				CellNumber = cellsNumber,
+				IsGameFinished = game.WhoseMove == null
+			};
         }
-
     }
 }

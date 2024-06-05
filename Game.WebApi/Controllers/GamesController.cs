@@ -1,6 +1,7 @@
 ﻿using GameApp.WebApi.Hubs;
 using GameApp.WebApi.Services.Games;
 using GameApp.WebApi.Services.Games.Dto;
+using GameApp.WebApi.Services.Rooms;
 using GameApp.WebApi.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -11,13 +12,16 @@ namespace GameApp.WebApi.Controllers
 	{
 		private readonly IGameService _gameService;
 		private readonly IUserService _userService;
-		private readonly IHubContext<GameHub> _gameHub;
+		private readonly IRoomService _roomService;
 
-		public GamesController(IGameService gameService, IUserService userService, IHubContext<GameHub> gameHub = null)
+        private readonly IHubContext<GameHub> _gameHub;
+
+		public GamesController(IGameService gameService, IUserService userService, IRoomService roomService, IHubContext<GameHub> gameHub = null)
 		{
 			_gameService = gameService;
 			_userService = userService;
-			_gameHub = gameHub;
+            _roomService = roomService;
+            _gameHub = gameHub;
 		}
 
 		[HttpPost("[action]")]
@@ -63,8 +67,13 @@ namespace GameApp.WebApi.Controllers
             try
             {
                 var userId = await _userService.GetId(User.Identity!.Name!);
+                var currentRoom = await _roomService.GetCurrentRoom(userId);
+                var stepInfo = await _gameService.DoStepAsync(cellsNumber, userId, currentRoom.Opponent.Id);
 
-                await _gameService.DoStepAsync(cellsNumber, userId);
+                await _gameHub.Clients
+					.Client(GameHub._connectionUsers[currentRoom.Opponent.Login])
+					.SendAsync("StepResult", stepInfo);
+
                 return Ok();
             }
             catch (Exception ex)

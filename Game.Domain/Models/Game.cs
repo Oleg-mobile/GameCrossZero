@@ -14,9 +14,9 @@ namespace GameApp.Domain.Models
         [ForeignKey("WinnerId")]
         public User? Winner { get; set; }
 
-        public int WhoseMoveId { get; set; }
+        public int? WhoseMoveId { get; set; }
 
         [ForeignKey("WhoseMoveId")]
-        public User WhoseMove { get; set; }
+        public User? WhoseMove { get; set; }
     }
 }

@@ -30,9 +30,9 @@ class GamesService {
             });
     }
 
-    async fixStep(cellsNumber) {
+    async doStep(cellsNumber) {
         await axios
-            .post(this.url + '/FixStep?cellsNumber=' + cellsNumber)
+            .post(this.url + '/DoStep?cellsNumber=' + cellsNumber)
             .then(function (response) { })
             .catch(function (error) {
                 console.log(error);
