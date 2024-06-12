@@ -44,26 +44,25 @@ const initField = async function () {
 
 initField();
 
-const makeStep = async function () {
-    var cellNumber = 0;
-    _table.onclick = function (e) {
-        let element = e.target;
-        if (element.tagName === 'TD') {
-            if (element.style.backgroundImage === "") {
-                element.style.backgroundImage = _myFigure;
-                cellNumber = +element.dataset.cellNumber;
-            }
+_table.onclick = async function (e) {
+    let element = e.target;
+    if (element.tagName === 'TD' && gameInfo.isMyStep) {
+        if (element.style.backgroundImage === "") {
+            element.style.backgroundImage = _myFigure;
+            const cellNumber = +element.dataset.cellNumber;
+
+            await _gamesService.doStep(cellNumber);
+
+            _whoseMove.textContent = "оппонента";
+            _table.style.cursor = 'not-allowed';
+
+            gameInfo.isMyStep = false;
         }
     }
-    return cellNumber;
 }
 
 if (gameInfo.isMyStep === true) {
     _whoseMove.textContent = "Ваш";
-
-    let cellsNumber = makeStep();  // promise ?
-    await _gamesService.doStep(cellsNumber);
-
 } else {
     _whoseMove.textContent = "оппонента";
     _table.style.cursor = 'not-allowed';

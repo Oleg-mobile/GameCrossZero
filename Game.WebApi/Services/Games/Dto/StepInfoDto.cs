@@ -4,5 +4,6 @@
     {
         public int CellNumber { get; set; }
         public bool IsGameFinished { get; set; }
+        public WinningCombinationType? WinningCombinationType { get; set; }
     }
 }

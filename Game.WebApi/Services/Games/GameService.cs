@@ -128,7 +128,12 @@ namespace GameApp.WebApi.Services.Games
                 throw new Exception($"Игрока с Id={userId} не существует");
             }
 
-			var game = await Context.Games.FirstAsync(g => g.Id == user.CurrentRoom.CurrentGameId && g.RoomId == user.CurrentRoom.Id);
+            if (user.CurrentRoom is null)
+            {
+                throw new Exception($"Игрок с Id={userId} не находится в комнате");
+            }
+
+            var game = await Context.Games.FirstAsync(g => g.Id == user.CurrentRoom.CurrentGameId);
 			if (game.WhoseMoveId != userId)
 			{
                 throw new Exception("Ход другого игрока");
@@ -157,47 +162,31 @@ namespace GameApp.WebApi.Services.Games
 				StrokeNumber = numberOfSteps + 1
 			};
 
-			var gameProgressByUser = gameProgressByGame.Where(gp => gp.UserId == userId).Select(gp => gp.Cell).ToList();
-			gameProgressByUser.Add(cellsNumber);
-			var hash = new HashSet<int>(gameProgressByUser);
-            var winnerPositions = new WinningCombinationsDto();
-			bool isWin = false;
+			var gameProgressByUser = gameProgressByGame
+											.Where(gp => gp.UserId == userId)
+											.Select(gp => gp.Cell)
+											.Append(cellsNumber)
+											.ToList();
 
-			foreach (var position in winnerPositions.Horizontal)
+			WinningCombinationType? winningCombinationType = null;
+
+			foreach (var position in WinningCombinations.Items)
 			{
-                if (hash.IsSupersetOf(position))
+                if (position.All(c => gameProgressByUser.Contains(c)))
                 {
-					isWin = true;
-					// Горизонтальная победа
+					winningCombinationType = position.Type;
                 }
             }
 
-            foreach (var position in winnerPositions.Vertical)
-            {
-                if (hash.IsSupersetOf(position))
-                {
-                    isWin = true;
-                    // Вертикальная победа
-                }
-            }
-
-            if (hash.IsSupersetOf(winnerPositions.LeftDiagonal))
-            {
-                isWin = true;
-                // Левая диагональная победа
-            }
-
-            if (hash.IsSupersetOf(winnerPositions.RightDiagonal))
-            {
-                isWin = true;
-                // Правая диагональная победа
-            }
-
-            if (isWin)
+			if (winningCombinationType.HasValue)
 			{
-                game.WhoseMoveId = null;
+				game.WhoseMoveId = null;
 				game.WinnerId = userId;
-            }
+			}
+			else if (numberOfSteps + 1 == Utils.Constants.maxCell)
+			{
+				game.WhoseMoveId = null;  // Ничья
+			}
 
             Context.GameProgresses.Add(gameProgress);
             Context.Games.Update(game);
@@ -206,7 +195,8 @@ namespace GameApp.WebApi.Services.Games
             return new StepInfoDto
 			{
 				CellNumber = cellsNumber,
-				IsGameFinished = game.WhoseMove == null
+				IsGameFinished = game.WhoseMove == null,
+				WinningCombinationType = winningCombinationType
 			};
         }
     }
