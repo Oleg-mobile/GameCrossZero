@@ -1,5 +1,6 @@
 ﻿import APP_CONSTS from '../../common/appConsts.js';
 import _gamesService from '../../Api/gamesService.js';
+import _roomsService from '../../Api/roomsService.js';
 
 const _gameModalNode = document.getElementById('gameModal');
 const _whoseMove = document.querySelector('#whoseMove');
@@ -7,6 +8,8 @@ const _figure = document.querySelector('#figure');
 const _roomId = +_gameModalNode.dataset.roomId;
 const _gameModal = new bootstrap.Modal(_gameModalNode);
 const _table = document.querySelector('table');
+const _cellsMap = _table.getElementsByTagName('td');
+const _exitbtn = document.querySelector('#exitGame');
 let _isMyFigureCross;
 let _myFigure;
 
@@ -33,12 +36,10 @@ if (_isMyFigureCross === true) {
 }
 
 const initField = async function () {
-    var cellsMap = _table.getElementsByTagName('td');
-
     for (var i = 0; i < gameInfo.steps.length; i++) {
         gameInfo.steps[i].isCross ?
-            cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + cross.src + ")" :
-            cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + zero.src + ")";
+            _cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + cross.src + ")" :
+            _cellsMap[gameInfo.steps[i].cellNumber].style.backgroundImage = "url(" + zero.src + ")";
     }
 }
 
@@ -89,7 +90,30 @@ connection
     });
 
 connection.on('StepResult', function (stepInfo) {
-    console.log('StepResult ' + stepInfo.CellNumber + ' ' + stepInfo.IsGameFinished);
+    console.log('StepResult ' + stepInfo.cellNumber + ' ' + stepInfo.isGameFinished);
+
+    if (!stepInfo.isGameFinished) {
+        if (_isMyFigureCross === true) {
+            _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + zero.src + ")";
+        } else {
+            _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + cross.src + ")";
+        }
+
+        _whoseMove.textContent = "Ваш";
+        _table.style.cursor = 'default';
+    } else {
+        if (stepInfo.cellNumber == null) {
+            console.log('You won!');
+        } else {
+            console.log('Draw!');
+        }
+
+        let currentRoom = _roomsService.getCurrentRoom();
+        if (currentRoom.isPlayerRoomManager) {
+            _exitbtn.classList.remove("d-none");
+        }
+
+    }
 
 });
 
