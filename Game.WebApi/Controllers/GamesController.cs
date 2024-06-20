@@ -81,5 +81,25 @@ namespace GameApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ExitGame([FromQuery] int roomId)
+        {
+            try
+            {
+                var userId = await _userService.GetId(User.Identity!.Name!);
+                var currentRoom = await _roomService.GetCurrentRoom(userId);
+                await _gameHub.Clients
+					.Client(GameHub._connectionUsers[currentRoom.Opponent.Login])
+					.SendAsync("ExitGame", roomId);
+
+                await _gameService.ExitGameAsync(roomId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

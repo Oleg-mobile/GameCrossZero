@@ -40,6 +40,17 @@ class GamesService {
             .finally(function () {
             });
     }
+
+    async exitGame(roomId) {
+        await axios
+            .post(this.url + '/ExitGame?roomId=' + roomId)
+            .then(function (response) { })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+            });
+    }
 }
 
 export default new GamesService();

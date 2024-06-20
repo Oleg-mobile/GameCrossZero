@@ -2,16 +2,17 @@
 import _gamesService from '../../Api/gamesService.js';
 import _roomsService from '../../Api/roomsService.js';
 
-const _gameModalNode = document.getElementById('gameModal');
-const _whoseMove = document.querySelector('#whoseMove');
-const _figure = document.querySelector('#figure');
-const _roomId = +_gameModalNode.dataset.roomId;
-const _gameModal = new bootstrap.Modal(_gameModalNode);
-const _table = document.querySelector('table');
-const _cellsMap = _table.getElementsByTagName('td');
-const _exitbtn = document.querySelector('#exitGame');
-let _isMyFigureCross;
-let _myFigure;
+const _gameModalNode = document.getElementById('gameModal'),
+    _whoseMove = document.querySelector('#whoseMove'),
+    _figure = document.querySelector('#figure'),
+    _roomId = +_gameModalNode.dataset.roomId,
+    _gameModal = new bootstrap.Modal(_gameModalNode),
+    _table = document.querySelector('table'),
+    _cellsMap = _table.getElementsByTagName('td'),
+    _exitbtn = document.querySelector('#exitGame');
+let _isMyFigureCross,
+    _myFigure,
+    _currentRoom;
 
 _gameModal.show();
 
@@ -108,12 +109,23 @@ connection.on('StepResult', function (stepInfo) {
             console.log('Draw!');
         }
 
-        let currentRoom = _roomsService.getCurrentRoom();
-        if (currentRoom.isPlayerRoomManager) {
+        _currentRoom = _roomsService.getCurrentRoom();
+        if (_currentRoom.isPlayerRoomManager) {
             _exitbtn.classList.remove("d-none");
         }
-
     }
-
 });
 
+
+
+connection.on('ExitGame', async function (roomId) {
+    console.log('ExitGame ' + roomId);
+
+    await _gamesService.exitGame(_currentRoom.id);
+    location.href = "rooms/" + currentRoom.id;
+});
+
+_exitbtn.addEventListener('click', async () => {
+    await _gamesService.exitGame(_currentRoom.id);
+    location.href = "rooms/" + currentRoom.id;
+});

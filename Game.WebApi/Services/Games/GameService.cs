@@ -199,5 +199,14 @@ namespace GameApp.WebApi.Services.Games
 				WinningCombinationType = winningCombinationType
 			};
         }
+
+		public async Task ExitGameAsync(int roomId)
+		{
+            var room = await Context.Rooms.FindAsync(roomId);
+            room.CurrentGameId = null;
+            Context.Rooms.Update(room);
+
+            await Context.SaveChangesAsync();
+        }
     }
 }
