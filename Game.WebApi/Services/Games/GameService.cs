@@ -182,11 +182,14 @@ namespace GameApp.WebApi.Services.Games
 			{
 				game.WhoseMoveId = null;
 				game.WinnerId = userId;
-			}
+				await ExitGameAsync(user.CurrentRoomId.Value);
+
+            }
 			else if (numberOfSteps + 1 == Utils.Constants.maxCell)
 			{
 				game.WhoseMoveId = null;  // Ничья
-			}
+                await ExitGameAsync(user.CurrentRoomId.Value);
+            }
 
             Context.GameProgresses.Add(gameProgress);
             Context.Games.Update(game);
@@ -200,7 +203,7 @@ namespace GameApp.WebApi.Services.Games
 			};
         }
 
-		public async Task ExitGameAsync(int roomId)
+		private async Task ExitGameAsync(int roomId)
 		{
             var room = await Context.Rooms.FindAsync(roomId);
             room.CurrentGameId = null;

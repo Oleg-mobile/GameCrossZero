@@ -5,6 +5,11 @@
     {
       "library": "js-cookie@3.0.5",
       "destination": "wwwroot/lib/js-cookie/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "sweetalert2@11.4.4",
+      "destination": "wwwroot/lib/sweetalert2/"
     }
   ]
 }

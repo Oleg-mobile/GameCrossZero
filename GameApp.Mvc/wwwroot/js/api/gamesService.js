@@ -27,24 +27,19 @@ class GamesService {
             })
             .catch(function (error) {
                 console.log(error);
+
+                document.location.href = '/';
+
+                if (error.response.code == 500) {
+                    document.location.href = '/';
+                }
             });
     }
 
     async doStep(cellsNumber) {
-        await axios
+        return await axios
             .post(this.url + '/DoStep?cellsNumber=' + cellsNumber)
-            .then(function (response) { })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-            });
-    }
-
-    async exitGame(roomId) {
-        await axios
-            .post(this.url + '/ExitGame?roomId=' + roomId)
-            .then(function (response) { })
+            .then(function (response) { return response.data })
             .catch(function (error) {
                 console.log(error);
             })

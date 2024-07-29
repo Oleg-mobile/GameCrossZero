@@ -9,8 +9,5 @@ namespace GameApp.WebApi.Services.Games
         Task StartAsync(int roomId);
 		Task<InfoGameDto> GetInfoAsync(int roomId, int userId);
         Task<StepInfoDto> DoStepAsync(int cellsNumber, int userId, int opponentId);
-        Task ExitGameAsync(int roomId);
-
-
     }
 }

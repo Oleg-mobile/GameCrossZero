@@ -53,7 +53,21 @@ _table.onclick = async function (e) {
             element.style.backgroundImage = _myFigure;
             const cellNumber = +element.dataset.cellNumber;
 
-            await _gamesService.doStep(cellNumber);
+            const stepInfo = await _gamesService.doStep(cellNumber);
+
+            if (stepInfo.isGameFinished) {
+                if (stepInfo.winningCombinationType) {
+                    Swal.fire("Вы победили!").then((result) => {
+                        document.location.href = '/';
+                    });
+                } else {
+                    Swal.fire("Ничья!").then((result) => {
+                        document.location.href = '/';
+                    });
+                }
+
+                return;
+            }
 
             _whoseMove.textContent = "оппонента";
             _table.style.cursor = 'not-allowed';
@@ -93,39 +107,30 @@ connection
 connection.on('StepResult', function (stepInfo) {
     console.log('StepResult ' + stepInfo.cellNumber + ' ' + stepInfo.isGameFinished);
 
+    if (_isMyFigureCross === true) {
+        _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + zero.src + ")";
+    } else {
+        _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + cross.src + ")";
+    }
+
     if (!stepInfo.isGameFinished) {
-        if (_isMyFigureCross === true) {
-            _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + zero.src + ")";
-        } else {
-            _cellsMap[stepInfo.cellNumber].style.backgroundImage = "url(" + cross.src + ")";
-        }
 
         _whoseMove.textContent = "Ваш";
         _table.style.cursor = 'default';
-    } else {
-        if (stepInfo.cellNumber == null) {
-            console.log('You won!');
-        } else {
-            console.log('Draw!');
-        }
+        gameInfo.isMyStep = true;
 
-        _currentRoom = _roomsService.getCurrentRoom();
-        if (_currentRoom.isPlayerRoomManager) {
-            _exitbtn.classList.remove("d-none");
-        }
+        return;
+    }
+
+    if (stepInfo.winningCombinationType) {
+        Swal.fire("Вы проиграли!").then((result) => {
+            document.location.href = '/';
+        });
+    } else {
+        Swal.fire("Ничья!").then((result) => {
+            document.location.href = '/';
+        });
     }
 });
 
-
-
-connection.on('ExitGame', async function (roomId) {
-    console.log('ExitGame ' + roomId);
-
-    await _gamesService.exitGame(_currentRoom.id);
-    location.href = "rooms/" + currentRoom.id;
-});
-
-_exitbtn.addEventListener('click', async () => {
-    await _gamesService.exitGame(_currentRoom.id);
-    location.href = "rooms/" + currentRoom.id;
-});
+//location.href = "rooms/" + currentRoom.id;
